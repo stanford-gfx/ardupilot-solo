@@ -109,6 +109,7 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] PROGMEM = {
     { SCHED_TASK(update_thr_average),    4,     90 },
     { SCHED_TASK(three_hz_loop),       133,     75 },
     { SCHED_TASK(compass_accumulate),    4,    100 },
+    { SCHED_TASK(compass_cal_update),    4,     40 },
     { SCHED_TASK(barometer_accumulate),  8,     90 },
 #if FRAME_CONFIG == HELI_FRAME
     { SCHED_TASK(check_dynamic_flight),  8,     75 },

@@ -1,9 +1,11 @@
 /// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 
+#include "Copter.h"
+
 #define COMPASS_CAL_STICK_DELAY 2.0f // 2 seconds
 #define COMPASS_CAL_DELAY 5.0f
 
-static void compass_cal_update() {
+void Copter::compass_cal_update() {
     compass.compass_cal_update();
 
     if (compass.is_calibrating()) {

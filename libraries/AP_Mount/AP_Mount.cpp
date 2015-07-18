@@ -616,7 +616,7 @@ void AP_Mount::send_gimbal_report(mavlink_channel_t chan)
         if (_backends[instance] != NULL) {
             _backends[instance]->send_gimbal_report(chan);
         }
-    }    
+    }
 }
 
 bool AP_Mount::gimbal_onboard_cal(){ 
@@ -670,8 +670,14 @@ bool AP_Mount::acal_is_calibrating()
     return ret;
 }
 
-bool AP_Mount::acal_collecting_sample() {
-    return _acal_collecting_sample;
+bool AP_Mount::acal_collecting_sample()
+{
+    for(uint8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++){
+        if(_accel_cal[i].get_status() == ACCEL_CAL_COLLECTING_SAMPLE) {
+            return true;
+        }
+    }
+    return false;
 }
 
 //returns -1 if state is different or cal is running
@@ -680,16 +686,7 @@ void AP_Mount::acal_update()
     if(!gimbal_onboard_cal()) {
         _acal_failed = false;
         _acal_complete = true;
-        _acal_collecting_sample = false;
         return;
-    }
-    _acal_collecting_sample = false;
-
-    for(uint8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++){
-        if(_accel_cal[i].get_status() != ACCEL_CAL_WAITING_FOR_ORIENTATION) {
-            _acal_collecting_sample = true;
-            break;
-        }
     }
 
     for(uint8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++){

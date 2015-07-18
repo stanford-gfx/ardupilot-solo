@@ -482,12 +482,12 @@ bool AP_InertialSensor::_calculate_trim(float& trim_roll, float& trim_pitch)
     //apply scale factors and offsets
     off = _accel_offset[BODY_FIXED_IMU].get();
     sf = _accel_scale[BODY_FIXED_IMU].get();
-    body_fixed += off;
+    body_fixed -= off;
     body_fixed = Vector3f(body_fixed.x*sf.x,body_fixed.y*sf.y,body_fixed.z*sf.z);
 
     off = _accel_offset[0].get();
     sf = _accel_scale[0].get();
-    float_imu += off;
+    float_imu -= off;
     float_imu = Vector3f(float_imu.x*sf.x,float_imu.y*sf.y,float_imu.z*sf.z);
 
     Debug("V1 = %.5f %.5f %.5f\n V2 = %.5f %.5f %.5f\n", float_imu.x,float_imu.y,float_imu.z,
@@ -497,7 +497,7 @@ bool AP_InertialSensor::_calculate_trim(float& trim_roll, float& trim_pitch)
     float dot = (body_fixed*float_imu);             //F.B
     //q.w   = F.B + sqrt(|F|^2 * |B|^2)
     //q.xyz = F x B
-    Quaternion q(sqrt(sq(float_imu.length())*sq(body_fixed.length()))+dot, cross.x, cross.y, cross.z);
+    Quaternion q(sqrt(float_imu.length_squared()*body_fixed.length_squared())+dot, cross.x, cross.y, cross.z);
     q.normalize();
     trim_roll = q.get_euler_roll();
     trim_pitch = q.get_euler_pitch();

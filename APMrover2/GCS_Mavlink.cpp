@@ -580,12 +580,21 @@ bool GCS_MAVLINK::try_send_message(enum ap_message id)
         rover.send_pid_tuning(chan);
         break;
 
+    case MSG_MAG_CAL_PROGRESS:
+        rover.compass.send_mag_cal_progress(chan);
+        break;
+
+    case MSG_MAG_CAL_REPORT:
+        rover.compass.send_mag_cal_report(chan);
+        break;
+
     case MSG_RETRY_DEFERRED:
     case MSG_TERRAIN:
     case MSG_OPTICAL_FLOW:
     case MSG_GIMBAL_REPORT:
         break; // just here to prevent a warning
-	}
+
+    }
 
     
     return true;
@@ -810,6 +819,8 @@ GCS_MAVLINK::data_stream_send(void)
         send_message(MSG_RANGEFINDER);
         send_message(MSG_SYSTEM_TIME);
         send_message(MSG_BATTERY2);
+        send_message(MSG_MAG_CAL_REPORT);
+        send_message(MSG_MAG_CAL_PROGRESS);
         send_message(MSG_MOUNT_STATUS);
         send_message(MSG_EKF_STATUS_REPORT);
     }
@@ -1019,6 +1030,71 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
                 rover.gcs[chan-MAVLINK_COMM_0].send_autopilot_version();
                 result = MAV_RESULT_ACCEPTED;
             }
+            break;
+        }
+        case MAV_CMD_DO_START_MAG_CAL: {
+            result = MAV_RESULT_ACCEPTED;
+            //TODO: don't do compass cal when rover is running or armed
+            if(packet.param1 < 0 || packet.param1 > 255) {
+                result = MAV_RESULT_FAILED;
+                break;
+            }
+
+            uint8_t mag_mask = packet.param1;
+            bool retry = packet.param2;
+            bool autosave = packet.param3;
+            float delay = packet.param4;
+
+            if (mag_mask == 0) { // 0 means all
+                if (!rover.compass.start_calibration_all(retry, autosave, delay)) {
+                    result = MAV_RESULT_FAILED;
+                }
+            } else {
+                if (!rover.compass.start_calibration_mask(mag_mask, retry, autosave, delay)) {
+                    result = MAV_RESULT_FAILED;
+                }
+            }
+
+            break;
+        }
+
+        case MAV_CMD_DO_ACCEPT_MAG_CAL: {
+            result = MAV_RESULT_ACCEPTED;
+            if(packet.param1 < 0 || packet.param1 > 255) {
+                result = MAV_RESULT_FAILED;
+                break;
+            }
+
+            uint8_t mag_mask = packet.param1;
+
+            if (mag_mask == 0) { // 0 means all
+                if(!rover.compass.accept_calibration_all()) {
+                    result = MAV_RESULT_FAILED;
+                }
+                break;
+            }
+
+            if(!rover.compass.accept_calibration_mask(mag_mask)) {
+                result = MAV_RESULT_FAILED;
+            }
+            break;
+        }
+
+        case MAV_CMD_DO_CANCEL_MAG_CAL: {
+            result = MAV_RESULT_ACCEPTED;
+            if(packet.param1 < 0 || packet.param1 > 255) {
+                result = MAV_RESULT_FAILED;
+                break;
+            }
+
+            uint8_t mag_mask = packet.param1;
+
+            if (mag_mask == 0) { // 0 means all
+                rover.compass.cancel_calibration_all();
+                break;
+            }
+
+            rover.compass.cancel_calibration_mask(mag_mask);
             break;
         }
 

@@ -178,6 +178,16 @@ void AP_Gimbal::update_state()
             break;
     }
 
+    static double debug_1 = 0.0;
+    debug_1 += _measurement.delta_angles.x;
+    static double debug_2 = 0.0;
+    debug_2 += _measurement.delta_angles.y;
+    static double debug_3 = 0.0;
+    debug_3 += _measurement.delta_angles.z;
+    mavlink_msg_debug_send(MAVLINK_COMM_1, hal.scheduler->millis(), 1, debug_1);
+    mavlink_msg_debug_send(MAVLINK_COMM_1, hal.scheduler->millis(), 2, debug_2);
+    mavlink_msg_debug_send(MAVLINK_COMM_1, hal.scheduler->millis(), 3, debug_3);
+
     float gimbalRateDemVecLen = gimbalRateDemVec.length();
     if (gimbalRateDemVecLen > radians(400)) {
         gimbalRateDemVec *= radians(400)/gimbalRateDemVecLen;

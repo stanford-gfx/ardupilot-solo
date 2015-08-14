@@ -5170,8 +5170,11 @@ bool NavEKF::calcGpsGoodToAlign(void)
     bool usingInFlight = vehicleArmed && validOrigin && !constVelMode && !constPosMode;
 
     if (disarmTimeout || usingInFlight) {
+        ::printf("dbg1\n");
+        ::printf("t\n");
         return true;
     }
+    ::printf("%u %u %u %u %u %u %u %u\n", gpsVelFail, numSatsFail, hdopFail, hAccFail, yawFail, gpsDriftFail, gpsVertVelFail, gpsHorizVelFail);
 
     // record time of fail
     // assume  fail first time called
@@ -5181,8 +5184,10 @@ bool NavEKF::calcGpsGoodToAlign(void)
 
     // continuous period without fail required to return healthy
     if (imuSampleTime_ms - lastGpsVelFail_ms > 10000) {
+        ::printf("t\n");
         return true;
     } else {
+        ::printf("f\n");
         return false;
     }
 }

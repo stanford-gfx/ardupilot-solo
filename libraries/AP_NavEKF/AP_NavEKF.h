@@ -678,6 +678,24 @@ private:
     float gpsHorizVelFilt;          // amount of filtered horizontal GPS velocity detected during pre-flight GPS checks
     uint32_t magYawResetTimer_ms;   // timer in msec used to track how long good magnetometer data is failing innovation consistency checks
     bool consistentMagData;         // true when the magnetometers are passing consistency checks
+    bool usingInFlight = false;     // true if GPS is being used in-flight.
+    struct Location gpsloc_prev;    // LLH location of previous GPS measurement
+    bool prev_armed = false;        // true if the vehicle arm status was true on the previous time step
+
+    // Used by range finder measurement conditioning
+    float storedRngMeas[3];
+    uint32_t storedRngMeasTime_ms[3];
+    uint32_t lastRngMeasTime_ms = 0;
+    uint8_t rngMeasIndex = 0;
+
+    // Used by checks that determine if GPS quality is suitable for flight
+    bool gpsSpdAccPass = false; // true when gps claimed speed accuracy passes quality check threshold
+    bool ekfInnovationsPass = false; // true when GPS innovations pass quality threshold
+    float lpfFilterState = 0.0f; // first stage LPF filter state for GPS checks
+    float peakHoldFilterState = 0.0f; // peak hold with exponential decay filter state for GPS checks
+    uint32_t lastTime_ms = 0; // time stamp used for LPF filter applied to GPS checks
+    uint32_t lastInnovPassTime_ms = 0; // last time GPS innovation quality check passed
+    uint32_t lastInnovFailTime_ms = 0; // last time GPS innovation quality check failed
 
     // Used by smoothing of state corrections
     Vector10 gpsIncrStateDelta;    // vector of corrections to attitude, velocity and position to be applied over the period between the current and next GPS measurement

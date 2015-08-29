@@ -41,7 +41,10 @@ public:
         startup_delay_ms(1000),
         start_time_ms(0),
         attitude_for_control(),
-        _gyro3_bias(0,0,0)
+        _gyro3_bias(0,0,0),
+        lastEkfHealthyTime_ms(0),
+        lastEkfResetTime_ms(0),
+        ekfStarting(false)
         {
         }
 
@@ -153,6 +156,9 @@ private:
     Vector3f _accel_ef_ekf_blended;
     const uint16_t startup_delay_ms;
     uint32_t start_time_ms;
+    uint32_t lastEkfHealthyTime_ms;
+    uint32_t lastEkfResetTime_ms;
+    bool ekfStarting;
 
     Quaternion attitude_for_control;
     Vector3f _gyro3_bias;

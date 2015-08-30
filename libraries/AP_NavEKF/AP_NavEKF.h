@@ -682,6 +682,9 @@ private:
     struct Location gpsloc_prev;    // LLH location of previous GPS measurement
     bool prev_armed = false;        // true if the vehicle arm status was true on the previous time step
 
+    // USED FOR DEBUG
+    uint32_t frameCounter;
+
     // Used by range finder measurement conditioning
     float storedRngMeas[3];
     uint32_t storedRngMeasTime_ms[3];

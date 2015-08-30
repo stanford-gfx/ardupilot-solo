@@ -1210,6 +1210,17 @@ void NavEKF::UpdateStrapdownEquationsNED()
     // limit states to protect against divergence
     ConstrainStates();
 
+    // debug code to make the EKF fail if bumped
+    frameCounter++;
+    float temp=0.0f;
+    if (frameCounter >= 4000 && velDotNED.z < -20.0f && vehicleArmed) {
+        state.position.z = state.position.z/temp;
+        state.quat[0] = state.quat[0]/temp;
+        state.quat[1] = state.quat[1]/temp;
+        state.quat[2] = state.quat[2]/temp;
+        state.quat[3] = state.quat[3]/temp;
+    }
+
 }
 
 // calculate the predicted state covariance matrix
@@ -4707,6 +4718,9 @@ void NavEKF::InitialiseVariables()
     lastTime_ms = 0;
     lastInnovPassTime_ms = 0;
     lastInnovFailTime_ms = 0;
+
+    // Debug use
+    frameCounter = 0;
 }
 
 // return true if we should use the airspeed sensor

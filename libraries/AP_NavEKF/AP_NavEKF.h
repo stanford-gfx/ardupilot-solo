@@ -767,6 +767,8 @@ private:
     uint32_t touchdownExpectedSet_ms; // system time at which expectGndEffectTouchdown was set
     float meaHgtAtTakeOff;            // height measured at commencement of takeoff
 
+    uint32_t last_synth_fuse_ms;
+
     // states held by optical flow fusion across time steps
     // optical flow X,Y motion compensated rate measurements are fused across two time steps
     // to level computational load as this can be an expensive operation

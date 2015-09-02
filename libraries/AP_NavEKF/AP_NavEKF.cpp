@@ -851,7 +851,7 @@ void NavEKF::SelectVelPosFusion()
             fuseVelData = false;
             fusePosData = false;
         }
-    } else if (constPosMode && covPredStep) {
+    } else if (constPosMode && imuSampleTime_ms-last_synth_fuse_ms >= msecGpsAvg) {
         // In constant position mode use synthetic position and velocity measurements set to zero
         // Only fuse synthetic position measurements when rate of change of velocity is less than 0.5g to reduce attitude errors due to launch acceleration
         // Only fuse synthetic velocity measurements when on the ground to reduce attitude errors due to short term manoeuvres
@@ -865,7 +865,9 @@ void NavEKF::SelectVelPosFusion()
         } else {
             fusePosData = false;
         }
-    } else if (constVelMode && covPredStep) {
+
+        last_synth_fuse_ms = imuSampleTime_ms;
+    } else if (constVelMode && imuSampleTime_ms-last_synth_fuse_ms >= msecGpsAvg) {
         // In constant velocity mode we fuse the last valid velocity vector
         // Reset the stored velocity vector when we enter the mode
         if (constVelMode && !lastConstVelMode) {
@@ -880,6 +882,8 @@ void NavEKF::SelectVelPosFusion()
             fuseVelData = false;
         }
         fusePosData = false;
+
+        last_synth_fuse_ms = imuSampleTime_ms;
     } else {
         fuseVelData = false;
         fusePosData = false;
@@ -1915,6 +1919,18 @@ void NavEKF::FuseVelPosNED()
     Vector6 R_OBS_DATA_CHECKS; // Measurement variances used for data checks only
     Vector6 observation;
     float SK;
+
+    static uint32_t lastFusePosData = 0;
+    static uint32_t lastFuseVelData = 0;
+    if (fuseVelData) {
+        ::printf("fvdt %.6f\n", (imuSampleTime_ms-lastFuseVelData)*1.0e-3f);
+        lastFuseVelData = imuSampleTime_ms;
+    }
+
+    if (fusePosData) {
+        ::printf("fpdt %.6f\n", (imuSampleTime_ms-lastFusePosData)*1.0e-3f);
+        lastFusePosData = imuSampleTime_ms;
+    }
 
     // perform sequential fusion of GPS measurements. This assumes that the
     // errors in the different velocity and position components are
@@ -4612,6 +4628,7 @@ void NavEKF::InitialiseVariables()
     lastGpsAidBadTime_ms = 0;
     timeAtDisarm_ms = 0;
     magYawResetTimer_ms = imuSampleTime_ms;
+    last_synth_fuse_ms = 0;
 
     // initialise other variables
     gpsNoiseScaler = 1.0f;

@@ -759,6 +759,13 @@ void NavEKF::UpdateFilter()
     SelectTasFusion();
     SelectBetaFusion();
 
+    static uint32_t last_print=0;
+    if (imuSampleTime_ms-last_print > 1000) {
+        ::printf("v %f %f %f\n", state.velocity.x, state.velocity.y, state.velocity.z);
+        ::printf("p %f %f %f\n\n", state.position.x, state.position.y, state.position.z);
+        last_print = imuSampleTime_ms;
+    }
+
     // stop the timer used for load measurement
     perf_end(_perf_UpdateFilter);
 }
@@ -1916,7 +1923,6 @@ void NavEKF::FuseVelPosNED()
     // so we might as well take advantage of the computational efficiencies
     // associated with sequential fusion
     if (fuseVelData || fusePosData || fuseHgtData) {
-
         // if constant position or constant velocity mode use the current states to calculate the predicted
         // measurement rather than use states from a previous time. We need to do this
         // because there may be no stored states due to lack of real measurements.
@@ -1999,6 +2005,7 @@ void NavEKF::FuseVelPosNED()
         // calculate innovations and check GPS data validity using an innovation consistency check
         // test position measurements
         if (fusePosData) {
+            ::printf("fp %f %f\n", observation[3], observation[4]);
             // test horizontal position measurements
             innovVelPos[3] = statesAtPosTime.position.x - observation[3];
             innovVelPos[4] = statesAtPosTime.position.y - observation[4];
@@ -2044,6 +2051,7 @@ void NavEKF::FuseVelPosNED()
 
         // test velocity measurements
         if (fuseVelData) {
+            ::printf("fv %f %f\n", observation[0],observation[1]);
             // test velocity measurements
             uint8_t imax = 2;
             if (_fusionModeGPS == 1 || constVelMode) {
@@ -4233,7 +4241,7 @@ void NavEKF::readGpsData()
 void NavEKF::readHgtData()
 {
     // check to see if baro measurement has changed so we know if a new measurement has arrived
-    if (_baro.get_last_update() != lastHgtMeasTime) {
+    if (_baro.get_last_update() - lastHgtMeasTime > 100) {
         // Don't use Baro height if operating in optical flow mode as we use range finder instead
         if (_fusionModeGPS == 3 && _altSource == 1) {
             if ((imuSampleTime_ms - rngValidMeaTime_ms) < 2000) {
@@ -4290,7 +4298,7 @@ void NavEKF::readHgtData()
 // check for new magnetometer data and update store measurements if available
 void NavEKF::readMagData()
 {
-    if (use_compass() && _ahrs->get_compass()->last_update_usec() != lastMagUpdate) {
+    if (use_compass() && _ahrs->get_compass()->last_update_usec() - lastMagUpdate > 100000) {
         // store time of last measurement update
         lastMagUpdate = _ahrs->get_compass()->last_update_usec();
 

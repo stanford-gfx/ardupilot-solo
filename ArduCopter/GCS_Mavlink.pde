@@ -903,6 +903,7 @@ GCS_MAVLINK::data_stream_send(void)
         send_message(MSG_MAG_CAL_REPORT);
         send_message(MSG_MAG_CAL_PROGRESS);
         send_message(MSG_EKF_STATUS_REPORT);
+        send_message(MSG_GPS_ACCURACY);
     }
 }
 

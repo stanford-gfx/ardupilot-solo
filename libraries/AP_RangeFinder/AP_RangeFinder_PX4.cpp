@@ -157,12 +157,13 @@ void AP_RangeFinder_PX4::update(void)
         if(orb_check(_orb_handle, &updated) != -1 && updated &&
                 orb_copy(ORB_ID(distance_sensor), _orb_handle, &report) != -1) {
             _last_timestamp = report.timestamp;
-            state.distance_cm = report.current_distance + ranger._offset[state.instance];
-            ranger._min_distance_cm[state.instance] = report.min_distance;
-            ranger._max_distance_cm[state.instance] = report.max_distance;
+            state.distance_cm = report.current_distance * 100 + ranger._offset[state.instance];
+            ranger._min_distance_cm[state.instance] = report.min_distance * 100;
+            ranger._max_distance_cm[state.instance] = report.max_distance * 100;
             update_status();
         }
         if(hal.scheduler->micros64() - _last_timestamp >= 200000) {
+           hal.console->printf("Range data is old\n");
             set_status(RangeFinder::RangeFinder_NoData);
         }
     } else {

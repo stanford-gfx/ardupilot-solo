@@ -1081,6 +1081,13 @@ static void one_hz_loop()
         Log_Write_Data(DATA_AP_STATE, ap.value);
     }
 
+    // Switch into Optical Flow mode if a flow sensor is present
+    // FIXME: there might be a better place for this to live, and controls changes
+    // would ideally make it unnecessary
+    if(optflow.enabled() && optflow.healthy()) {
+        ahrs.setInhibitGPS();
+    }
+
     // perform pre-arm checks & display failures every 2 seconds
     if (!motors.armed()) {
         static uint8_t pre_arm_display_counter = 0;

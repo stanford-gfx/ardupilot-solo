@@ -3712,7 +3712,7 @@ void NavEKF::resetGyroBias(void)
 // Returns 2 if attitude, 3D-velocity, vertical position and relative horizontal position will be provided
 uint8_t NavEKF::setInhibitGPS(void)
 {
-    if(!vehicleArmed) {
+    if(vehicleArmed) {
         return 0;
     }
     if (optFlowDataPresent()) {
@@ -5384,7 +5384,7 @@ void NavEKF::calcGpsGoodForFlight(void)
 // returns true of the EKF thinks the GPS is glitching or unavailable
 bool NavEKF::getGpsGlitchStatus(void) const
 {
-    return !gpsAccuracyGood;
+    return !gpsAccuracyGood && (_fusionModeGPS != 3);
 }
 
 #endif // HAL_CPU_CLASS

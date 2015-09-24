@@ -246,7 +246,7 @@ static bool pre_arm_checks(bool display_failure)
     if (ap.pre_arm_check) {
         // run gps checks because results may change and affect LED colour
         // no need to display failures because arm_checks will do that if the pilot tries to arm
-        pre_arm_gps_checks(false);
+        pre_arm_position_ref_checks(false);
         return true;
     }
 
@@ -333,7 +333,7 @@ static bool pre_arm_checks(bool display_failure)
     }
 
     // check GPS
-    if (!pre_arm_gps_checks(display_failure)) {
+    if (!pre_arm_position_ref_checks(display_failure)) {
         return false;
     }
 
@@ -470,7 +470,8 @@ static bool pre_arm_checks(bool display_failure)
 
 #if CONFIG_SONAR == ENABLED
         // check range finder
-        if (!sonar.pre_arm_check()) {
+        // FIXME: maybe add a minimum and maximum pre-arm distance?
+        if (!sonar.has_data()) {
             if (display_failure) {
                 gcs_send_text_P(SEVERITY_HIGH,PSTR("PreArm: check range finder"));
             }
@@ -525,8 +526,8 @@ static void pre_arm_rc_checks()
     set_pre_arm_rc_check(true);
 }
 
-// performs pre_arm gps related checks and returns true if passed
-static bool pre_arm_gps_checks(bool display_failure)
+// performs pre_arm gps/OF related checks and returns true if passed
+static bool pre_arm_position_ref_checks(bool display_failure)
 {
     // always check if inertial nav has started and is ready
     if(!ahrs.get_NavEKF().healthy()) {
@@ -556,6 +557,24 @@ static bool pre_arm_gps_checks(bool display_failure)
     if (!gps_required) {
         AP_Notify::flags.pre_arm_gps_check = true;
         return true;
+    }
+
+    // check if we have optical flow
+    // FIXME: we should check that flow values are below a threshold when we are on the ground
+    // FIXME: if we fuse both flow and gps at the same time, lack of good flow data shouldn't prevent takeoff;
+    //   this is an artifact of having called setInhibitGPS().  also, if we fuse both, we still need to pass
+    //   far_from_EKF_origin.
+    if (optflow.enabled()) {
+        if(optflow_position_ok()) {
+            AP_Notify::flags.pre_arm_gps_check = true;
+            return true;
+        } else {
+            if(display_failure) {
+                gcs_send_text_P(SEVERITY_HIGH,PSTR("PreArm: Bad flow data"));
+            }
+            AP_Notify::flags.pre_arm_gps_check = false;
+            return false;
+        }
     }
 
     // ensure GPS is ok
@@ -645,7 +664,7 @@ static bool arm_checks(bool display_failure, bool arming_from_gcs)
     }
 
     // check gps
-    if (!pre_arm_gps_checks(display_failure)) {
+    if (!pre_arm_position_ref_checks(display_failure)) {
         return false;
     }
 

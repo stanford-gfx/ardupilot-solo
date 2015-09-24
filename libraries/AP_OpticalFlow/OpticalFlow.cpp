@@ -11,7 +11,7 @@ const AP_Param::GroupInfo OpticalFlow::var_info[] PROGMEM = {
     // @Description: Setting this to Enabled(1) will enable optical flow. Setting this to Disabled(0) will disable optical flow
     // @Values: 0:Disabled, 1:Enabled
     // @User: Standard
-    AP_GROUPINFO("_ENABLE", 0,  OpticalFlow,    _enabled,   0),
+    AP_GROUPINFO("_ENABLE", 0,  OpticalFlow,    _enabled,   1),
 
     // @Param: FXSCALER
     // @DisplayName: X axis optical flow scale factor correction

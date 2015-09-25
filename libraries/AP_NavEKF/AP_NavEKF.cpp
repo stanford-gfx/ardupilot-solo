@@ -4389,6 +4389,13 @@ void NavEKF::writeOptFlowMeas(uint8_t &rawFlowQuality, Vector2f &rawFlowRates, V
     }
 }
 
+// return the gyro-compensated optical flow rate
+void NavEKF::getFlowCompensated(Vector2f &compensatedFlowRates) const
+{
+    compensatedFlowRates.x = flowRadXYcomp[0];
+    compensatedFlowRates.y = flowRadXYcomp[1];
+}
+
 // calculate the NED earth spin vector in rad/sec
 void NavEKF::calcEarthRateNED(Vector3f &omega, int32_t latitude) const
 {

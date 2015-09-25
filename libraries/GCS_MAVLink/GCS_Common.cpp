@@ -1265,15 +1265,27 @@ void GCS_MAVLINK::send_opticalflow(AP_AHRS_NavEKF &ahrs, const OpticalFlow &optf
         ahrs.get_NavEKF().getHAGL(hagl);
     }
 
+    /* Note: as specified, the optical flow message takes flow in dezi-pixels (pixels * 10), as
+     * an int16.  We don't get that value from the flow sensor anymore, so instead we send
+     * the uncompensated flow value in milliradians.
+     */
+    int16_t flow_x = flowRate.x * 1000;
+    int16_t flow_y = flowRate.y * 1000;
+
+    Vector2f flow_comp;
+    if(ahrs.have_inertial_nav()) {
+        ahrs.get_NavEKF().getFlowCompensated(flow_comp);
+    }
+
     // populate and send message
     mavlink_msg_optical_flow_send(
         chan,
         hal.scheduler->millis(),
         0, // sensor id is zero
-        flowRate.x,
-        flowRate.y,
-        bodyRate.x,
-        bodyRate.y,
+        flow_x,
+        flow_y,
+        flow_comp.x,
+        flow_comp.y,
         optflow.quality(),
         hagl); // ground distance (in meters) set to zero
 }

@@ -101,7 +101,7 @@ static bool poshold_init(bool ignore_checks)
     }
 
     // fail to initialise PosHold mode if no GPS lock
-    if (!position_ok() && !ignore_checks) {
+    if (!position_ok() && !optflow_position_ok() && !ignore_checks) {
         return false;
     }
     

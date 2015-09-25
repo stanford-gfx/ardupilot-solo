@@ -12,7 +12,7 @@ float rtl_altitude = 0;
 // rtl_init - initialise rtl controller
 static bool rtl_init(bool ignore_checks)
 {
-    if (position_ok() || ignore_checks) {
+    if (position_ok() || optflow_position_ok() || ignore_checks) {
         rtl_altitude = get_RTL_alt();
         rtl_climb_start();
         return true;
@@ -277,7 +277,7 @@ static void rtl_descent_run()
     if (!failsafe.radio) {
         if(rc_throttle_control_in_filter.get() > 700){
             // exit land
-            if (position_ok()) {
+            if (position_ok() || optflow_position_ok()) {
                 set_mode(LOITER);
             } else {
                 set_mode(ALT_HOLD);
@@ -368,7 +368,7 @@ static void rtl_land_run()
     if (!failsafe.radio) {
         if(rc_throttle_control_in_filter.get() > 700){
             // exit land
-            if (position_ok()) {
+            if (position_ok() || optflow_position_ok()) {
                 set_mode(LOITER);
             } else {
                 set_mode(ALT_HOLD);

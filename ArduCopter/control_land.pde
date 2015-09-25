@@ -10,7 +10,7 @@ static bool land_init(bool ignore_checks)
 {
     // check if we have GPS and decide which LAND we're going to do
     land_with_gps = position_ok() && !failsafe.gps_glitch;
-    if (land_with_gps) {
+    if (land_with_gps || optflow_position_ok()) {
         // set target to stopping point
         Vector3f stopping_point;
         wp_nav.get_loiter_stopping_point_xy(stopping_point);
@@ -78,7 +78,7 @@ static void land_gps_run()
     if (!failsafe.radio) {
         if(rc_throttle_control_in_filter.get() > 700){
             // exit land
-            if (position_ok()) {
+            if (position_ok() || optflow_position_ok()) {
                 set_mode(LOITER);
             } else {
                 set_mode(ALT_HOLD);
@@ -153,7 +153,7 @@ static void land_nogps_run()
     if (!failsafe.radio) {
         if(rc_throttle_control_in_filter.get() > 700){
             // exit land
-            if (position_ok()) {
+            if (position_ok() || optflow_position_ok()) {
                 set_mode(LOITER);
             } else {
                 set_mode(ALT_HOLD);

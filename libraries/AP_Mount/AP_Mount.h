@@ -26,6 +26,7 @@
 #include <AP_Common.h>
 #include <AP_GPS.h>
 #include <AP_AHRS.h>
+#include <AP_SmallEKF.h>
 #include <GCS_MAVLink.h>
 #include <DataFlash.h>
 #include <AP_Gimbal_Parameters.h>
@@ -122,6 +123,7 @@ public:
     // send a GIMBAL_REPORT message to GCS
     void send_gimbal_report(mavlink_channel_t chan);
 
+    SmallEKF* getSmallEKF() { return _ekf; }
     // status_msg - called to allow mounts to send their status to GCS using the MOUNT_STATUS message
     void status_msg(mavlink_channel_t chan);
 
@@ -129,6 +131,7 @@ public:
     static const struct AP_Param::GroupInfo        var_info[];
 
     AP_Gimbal_Parameters _externalParameters;
+    SmallEKF* _ekf;      //only supported for mount type MAVLink
 
 protected:
 

@@ -432,7 +432,7 @@
 #ifndef MOUNT
  # define MOUNT         ENABLED
 #endif
-
+#define AP_MNT_USING_SMALL_EKF 1
 
 //////////////////////////////////////////////////////////////////////////////
 // Flight mode definitions

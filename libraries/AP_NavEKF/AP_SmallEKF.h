@@ -110,6 +110,7 @@ private:
     // broken down as individual elements. Both are equivalent (same
     // memory)
     Vector13 states;
+    AP_Vector3f _gyro_offset;
     struct state_elements {
         Vector3f    angErr;         // 0..2 rotation vector representing the growth in angle error since the last state correction (rad)
         Vector3f    velocity;       // 3..5 NED velocity (m/s)

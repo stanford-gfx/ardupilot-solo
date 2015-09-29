@@ -197,7 +197,7 @@ public:
         //solo params 135..139
         k_param_rtl_speed_cms=135,
         k_param_fs_batt_curr_rtl,
-
+        k_param_SmallEKF,
         //
         // 140: Sensor parameters
         //

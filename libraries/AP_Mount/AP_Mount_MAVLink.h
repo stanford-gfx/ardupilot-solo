@@ -35,6 +35,7 @@ public:
     // has_pan_control - returns true if this mount can control it's pan (required for multicopters)
     virtual bool has_pan_control() const;
 
+    virtual SmallEKF* getSmallEKF() { return &_gimbal._ekf; }
     // set_mode - sets mount's mode
     virtual void set_mode(enum MAV_MOUNT_MODE mode);
 

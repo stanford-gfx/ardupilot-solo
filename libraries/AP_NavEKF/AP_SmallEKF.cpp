@@ -24,6 +24,24 @@ extern const AP_HAL::HAL& hal;
 
 // Define tuning parameters
 const AP_Param::GroupInfo SmallEKF::var_info[] PROGMEM = {
+    // @Param: GYROFFS_X
+    // @DisplayName: Gyro offsets of X axis
+    // @Description: Gyro sensor offsets of X axis. This is setup on each boot after SmallEKF init
+    // @Units: rad/s
+    // @User: Advanced
+
+    // @Param: GYROFFS_Y
+    // @DisplayName: Gyro offsets of Y axis
+    // @Description: Gyro sensor offsets of Y axis. This is setup on each boot after SmallEKF init
+    // @Units: rad/s
+    // @User: Advanced
+
+    // @Param: GYROFFS_Z
+    // @DisplayName: Gyro offsets of Z axis
+    // @Description: Gyro sensor offsets of Z axis. This is setup on each boot after SmallEKF init
+    // @Units: rad/s
+    // @User: Advanced
+    AP_GROUPINFO("GYROFFS",     0, SmallEKF, _gyro_offset,  0),
     AP_GROUPEND
 };
 

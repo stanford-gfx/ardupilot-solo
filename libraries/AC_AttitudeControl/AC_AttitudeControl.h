@@ -60,7 +60,8 @@ public:
         _pid_rate_yaw(pid_rate_yaw),
         _dt(AC_ATTITUDE_100HZ_DT),
         _angle_boost(0),
-        _acro_angle_switch(0)
+        _acro_angle_switch(0),
+        _mav_yaw_er(0)
 		{
 			AP_Param::setup_object_defaults(this, var_info);
 
@@ -206,6 +207,8 @@ public:
     // user settable parameters
     static const struct AP_Param::GroupInfo var_info[];
 
+    void set_mav_yaw_er(float _mav_value);
+
 protected:
 
     // attitude control flags
@@ -275,6 +278,8 @@ protected:
     Vector3f            _rate_bf_desired;       // body-frame feed forward rates
     int16_t             _angle_boost;           // used only for logging
     int16_t             _acro_angle_switch;           // used only for logging
+
+    float               _mav_yaw_er;
 };
 
 #define AC_ATTITUDE_CONTROL_LOG_FORMAT(msg) { msg, sizeof(AC_AttitudeControl::log_Attitude),	\

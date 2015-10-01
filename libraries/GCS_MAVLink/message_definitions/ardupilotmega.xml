@@ -99,6 +99,12 @@
                 <param index="6">Empty</param>
                 <param index="7">Empty</param>
             </entry>
+
+            <entry name="MAV_CMD_YAW_ER" value="55237">
+              <description>Sets a yaw rate error for the attitude controller</description>
+              <param index="1">Empty</param>
+            </entry>
+
           </enum>
 	  
 	  	<!--  AP_Limits Enums -->

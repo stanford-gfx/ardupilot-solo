@@ -100,6 +100,13 @@ const AP_Param::GroupInfo AP_Motors::var_info[] PROGMEM = {
     // @User: Advanced
     AP_GROUPINFO("THR_MIX_MIN", 13, AP_Motors, _thr_mix_min, AP_MOTORS_THR_MIX_MIN_DEFAULT),
 
+    // @Param: SLEW_RATE
+    // @DisplayName: Motor Output Slew Rate
+    // @Description: The maximum rate of change of the pwm values being sent to the motors, as a percent of the maximum value
+    // @Range: 0 1
+    // @User: Advanced
+    AP_GROUPINFO("SLEW_RATE", 14, AP_Motors, _slew_rate, AP_MOTORS_SLEW_RATE_DEFAULT),
+
     AP_GROUPEND
 };
 

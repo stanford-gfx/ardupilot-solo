@@ -22,7 +22,7 @@ public:
     AP_MotorsMatrix(RC_Channel& rc_roll, RC_Channel& rc_pitch, RC_Channel& rc_throttle, RC_Channel& rc_yaw, uint16_t loop_rate, uint16_t speed_hz = AP_MOTORS_SPEED_DEFAULT) :
         AP_Motors(rc_roll, rc_pitch, rc_throttle, rc_yaw, loop_rate, speed_hz)
     {
-        // initialize the last motor throttle for slew-rate control
+        // initialize the last motor throttle for slew rate control
         int8_t i;
         for (i=0; i<AP_MOTORS_MAX_NUM_MOTORS; i++) {
             _motor_out_last[i] = 0;
@@ -71,9 +71,11 @@ public:
     //  this can be used to ensure other pwm outputs (i.e. for servos) do not conflict
     virtual uint16_t    get_motor_mask();
 
+    void                output_armed_stabilizing();
+
+
 protected:
     // output - sends commands to the motors
-    void                output_armed_stabilizing();
     void                output_armed_not_stabilizing();
     void                output_disarmed();
 
@@ -84,7 +86,7 @@ protected:
     float               _pitch_factor[AP_MOTORS_MAX_NUM_MOTORS]; // each motors contribution to pitch
     float               _yaw_factor[AP_MOTORS_MAX_NUM_MOTORS];  // each motors contribution to yaw (normally 1 or -1)
     uint8_t             _test_order[AP_MOTORS_MAX_NUM_MOTORS];  // order of the motors in the test sequence
-    int16_t             _motor_out_last[AP_MOTORS_MAX_NUM_MOTORS];   // stores the output sent to the motors on the last loop for slew-rate control
+    int16_t             _motor_out_last[AP_MOTORS_MAX_NUM_MOTORS];   // stores the output sent to the motors on the last loop for slew rate control
 };
 
 #endif  // AP_MOTORSMATRIX

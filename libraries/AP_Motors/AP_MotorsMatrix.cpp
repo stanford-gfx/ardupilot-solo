@@ -189,7 +189,6 @@ void AP_MotorsMatrix::output_armed_stabilizing()
     int16_t rpy_high = 0;   // highest motor value
     int16_t yaw_allowed;    // amount of yaw we can fit in
     int16_t thr_adj;        // the difference between the pilot's desired throttle and out_best_thr_pwm (the throttle that is actually provided)
-    float delta_out_pwm;    // the percent (between 0 and 1) increase in pwm commands being sent to the motors
 
     // initialize limits flags
     limit.roll_pitch = false;
@@ -343,18 +342,17 @@ void AP_MotorsMatrix::output_armed_stabilizing()
         }
     }
 
-    // limit the slew-rate of the motors to avoid over-currenting the esc
+    // apply thrust curve to out_max_pwm for constraint
+    out_max_pwm = apply_thrust_curve_and_volt_scaling(out_max_pwm, out_min_pwm, out_max_pwm);
+
+    // limit the slew rate of the motors to avoid over-currenting the esc
     for (i=0; i<AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i] && _motor_out_last[i]>0) {
-            delta_out_pwm = (float)(motor_out[i] - _motor_out_last[i])/(float)_motor_out_last[i];
-            if (delta_out_pwm>2.0) {
-                motor_out[i] = 2*_motor_out_last[i]; 
+            if ( (float)(motor_out[i]-_motor_out_last[i]) > _slew_rate*(float)out_max_pwm) {
+                motor_out[i] = _motor_out_last[i] + (int16_t)(_slew_rate*(float)out_max_pwm);
             }
         }
     }
-
-    // apply thrust curve to out_max_pwm for constraint
-    out_max_pwm = apply_thrust_curve_and_volt_scaling(out_max_pwm, out_min_pwm, out_max_pwm);
 
     // clip motor output if required (shouldn't be unless we're doing a recovery)
     for (i=0; i<AP_MOTORS_MAX_NUM_MOTORS; i++) {
@@ -363,18 +361,13 @@ void AP_MotorsMatrix::output_armed_stabilizing()
         }
     }
 
-    // stores the motor's pwm for slew-rate control
-    for (i=0; i<AP_MOTORS_MAX_NUM_MOTORS; i++) {
-        if (motor_enabled[i]) {
-            _motor_out_last[i] = motor_out[i];
-        }
-    }
-
     // send output to each motor
     for( i=0; i<AP_MOTORS_MAX_NUM_MOTORS; i++ ) {
         if( motor_enabled[i] ) {
             _motor_out_pct[i] = (float)(motor_out[i]-out_min_pwm) / (out_max_pwm-out_min_pwm);
             hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[i]), motor_out[i]);
+            // stores the motor's pwm for slew rate control
+            _motor_out_last[i] = motor_out[i];
         } else {
             _motor_out_pct[i] = 0.0f;
         }

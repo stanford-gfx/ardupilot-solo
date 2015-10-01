@@ -912,7 +912,7 @@ static void fast_loop()
 #endif //HELI_FRAME
 
     // send outputs to the motors library
-    motors_output();
+    //motors_output();
 
     // Inertial Nav
     // --------------------

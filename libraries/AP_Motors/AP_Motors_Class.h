@@ -66,6 +66,7 @@
 #define AP_MOTORS_THR_MIX_MIN_DEFAULT   0.1f    // minimum throttle mix
 #define AP_MOTORS_THR_MIX_MID_DEFAULT   0.5f    // manual throttle mix
 #define AP_MOTORS_THR_MIX_MAX_DEFAULT   0.9f    // maximum throttle mix
+#define AP_MOTORS_SLEW_RATE_DEFAULT     0.01f   // maximum percent rate of change of the motor output 
 
 // bit mask for recording which limits we have reached when outputting to motors
 #define AP_MOTOR_NO_LIMITS_REACHED  0x00
@@ -217,9 +218,11 @@ public:
     // var_info for holding Parameter information
     static const struct AP_Param::GroupInfo        var_info[];
 
+    virtual void        output_armed_stabilizing()=0;
+
+
 protected:
     // output functions that should be overloaded by child classes
-    virtual void        output_armed_stabilizing()=0;
     virtual void        output_armed_not_stabilizing()=0;
     virtual void        output_disarmed()=0;
 
@@ -278,6 +281,7 @@ protected:
     AP_Float            _batt_voltage_min;      // minimum voltage used to scale lift
     AP_Float            _batt_current_max;      // current over which maximum throttle is limited
     AP_Float            _thr_mix_min;           // current over which maximum throttle is limited
+    AP_Float            _slew_rate;             // maximum rate of change of the output sent to motors
 
     // internal variables
     RC_Channel&         _rc_roll;               // roll input in from users is held in servo_out

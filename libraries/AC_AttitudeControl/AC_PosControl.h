@@ -251,6 +251,17 @@ public:
     ///     throttle targets will be sent directly to the motors
     void update_vel_controller_xyz(float ekfNavVelGainScaler);
 
+    /// xyz acceleration controller
+   
+    /// should be called once before the acceleration controller is used
+    void init_accel_controller_xyz();
+
+    /// sets target acceleration in cm/s^2
+    void set_accel_target(const Vector3f& accel_target);
+
+    // update_accel_controller_xyz - run the acceleration controller - should be called at 100hz or higher
+    void update_accel_controller_xyz(float ekfNavVelGainScaler);
+
     /// get desired roll, pitch which should be fed into stabilize controllers
     float get_roll() const { return _roll_target; }
     float get_pitch() const { return _pitch_target; }

@@ -1521,6 +1521,8 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
             Vector3f pos_ned = Vector3f(packet.x * 100.0f, packet.y * 100.0f, -packet.z * 100.0f);
             pos_ned.z = pv_alt_above_origin(pos_ned.z);
             guided_set_destination(pos_ned);
+        } else if (pos_ignore && vel_ignore && !acc_ignore) {
+            guided_set_acceleration(Vector3f(packet.afx * 100.0f, packet.afy * 100.0f, packet.afz * 100.0f));
         } else {
             result = MAV_RESULT_FAILED;
         }

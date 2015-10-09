@@ -121,6 +121,19 @@ static void guided_posvel_control_start()
     set_auto_yaw_mode(AUTO_YAW_HOLD);
 }
 
+// initilaizes guided mode's accel controller
+static void guided_accel_control_start()
+{
+    // set guided mode to acceleration controller
+    guided_mode = Guided_Accel;
+
+    // initialize vertical speeds and leash lengths
+    pos_control.set_speed_z(-g.pilot_velocity_z_max, g.pilot_velocity_z_max);
+    pos_control.set_accel_z(g.pilot_accel_z);
+
+    pos_control.init_accel_controller_xyz();
+}
+
 // guided_set_destination - sets guided mode's target destination
 static void guided_set_destination(const Vector3f& destination)
 {
@@ -158,6 +171,17 @@ static void guided_set_destination_posvel(const Vector3f& destination, const Vec
     pos_control.set_pos_target(posvel_pos_target_cm);
 }
 
+// set guided mode acceleration target
+static void guided_set_acceleration(const Vector3f& acceleration)
+{
+    if (guided_mode != Guided_Accel) {
+        guided_accel_control_start();
+    }
+
+    // set position controller acceleration target
+    pos_control.set_accel_target(acceleration);
+}
+
 // guided_run - runs the guided controller
 // should be called at 100hz or more
 static void guided_run()
@@ -191,6 +215,11 @@ static void guided_run()
     case Guided_PosVel:
         // run position-velocity controller
         guided_posvel_control_run();
+        break;
+
+    case Guided_Accel:
+        // run acceleration controller
+        guided_accel_control_run();
         break;
     }
  }
@@ -338,6 +367,44 @@ static void guided_posvel_control_run()
     }
 
     pos_control.update_z_controller();
+
+    // call attitude controller
+    if (auto_yaw_mode == AUTO_YAW_HOLD) {
+        // roll & pitch from waypoint controller, yaw rate from pilot
+        attitude_control.angle_ef_roll_pitch_rate_ef_yaw(pos_control.get_roll(), pos_control.get_pitch(), target_yaw_rate);
+    }else{
+        // roll, pitch from waypoint controller, yaw heading from auto_heading()
+        attitude_control.angle_ef_roll_pitch_yaw(pos_control.get_roll(), pos_control.get_pitch(), get_auto_heading(), true);
+    }
+}
+
+// guided_accel_control_run - runs the guided acceleration controller
+// called from guided_run
+static void guided_accel_control_run()
+{
+    // process pilot's yaw input
+    float target_yaw_rate = 0;
+    if (!failsafe.radio) {
+        // get pilot's desired yaw rate
+        target_yaw_rate = get_pilot_desired_yaw_rate(g.rc_4.control_in);
+        if (target_yaw_rate != 0) {
+            set_auto_yaw_mode(AUTO_YAW_HOLD);
+        }
+    }
+
+    // calculate dt
+    float dt = pos_control.time_since_last_xy_update();
+
+    // update at poscontrol update rate
+    if (dt >= pos_control.get_dt_xy()) {
+        // sanity check dt
+        if (dt >= 0.2f) {
+            dt = 0.0f;
+        }
+
+        // call acceleration controller which includes z axis controller
+        pos_control.update_accel_controller_xyz(ekfNavVelGainScaler);
+    }
 
     // call attitude controller
     if (auto_yaw_mode == AUTO_YAW_HOLD) {

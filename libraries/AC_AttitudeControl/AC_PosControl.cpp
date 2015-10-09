@@ -503,6 +503,17 @@ void AC_PosControl::set_pos_target(const Vector3f& position)
     //_pitch_target = constrain_int32(_ahrs.pitch_sensor,-_attitude_control.lean_angle_max(),_attitude_control.lean_angle_max());
 }
 
+// set accelration target in cm/s^2
+void AC_PosControl::set_accel_target(const Vector3f& acceleration)
+{
+    _accel_target.x = acceleration.x;
+    _accel_target.y = acceleration.y;
+
+    // TODO: should be using the z accel as well
+    _vel_desired.z = 0.0f;
+    _flags.enable_z_vel_ff = 0;
+}
+
 /// set_xy_target in cm from home
 void AC_PosControl::set_xy_target(float x, float y)
 {
@@ -689,6 +700,59 @@ void AC_PosControl::update_vel_controller_xyz(float ekfNavVelGainScaler)
 
     // run velocity to acceleration step
     rate_to_accel_xy(dt, ekfNavVelGainScaler);
+
+    // run acceleration to lean angle step
+    accel_to_lean_angles(dt, ekfNavVelGainScaler);
+
+    // update altitude target
+    set_alt_target_from_climb_rate(_vel_desired.z, dt);
+
+    // run z-axis position controller
+    update_z_controller();
+
+    // record update time
+    _last_update_xy_ms = now;
+}
+
+/// init_accel_controller_xyz - initialise the acceleration controller - should be called once before the caller attempts to use the controller
+void AC_PosControl::init_accel_controller_xyz()
+{
+    // set roll, pitch lean angle targets to current attitude
+    _roll_target = _ahrs.roll_sensor;
+    _pitch_target = _ahrs.pitch_sensor;
+
+    // reset last velocity if this controller has just been engaged or dt is zero
+    lean_angles_to_accel(_accel_target.x, _accel_target.y);
+    _pi_vel_xy.set_integrator(_accel_target);
+
+    // flag reset required in rate to accel step
+    _flags.reset_desired_vel_to_pos = true;
+    _flags.reset_rate_to_accel_xy = true;
+    _flags.reset_accel_to_lean_xy = true;
+
+    // set target position in xy axis
+    const Vector3f& curr_pos = _inav.get_position();
+    set_xy_target(curr_pos.x, curr_pos.y);
+
+    // move current vehicle velocity into feed forward velocity
+    const Vector3f& curr_vel = _inav.get_velocity();
+    set_desired_velocity_xy(curr_vel.x, curr_vel.y);
+}
+
+/// update_accel_controller - run the acceleration controller - should be called at 100hz or higher
+void AC_PosControl::update_accel_controller_xyz(float ekfNavVelGainScaler)
+{
+    // capture time since last iteration
+    uint32_t now = hal.scheduler->millis();
+    float dt = (now - _last_update_xy_ms) / 1000.0f;
+
+    // sanity check dt - expect to be called faster than ~5hz
+    if (dt >= POSCONTROL_ACTIVE_TIMEOUT_MS*1.0e-3f) {
+        dt = 0.0f;
+    }
+
+    // check if xy leash needs to be recalculated
+    calc_leash_length_xy();
 
     // run acceleration to lean angle step
     accel_to_lean_angles(dt, ekfNavVelGainScaler);

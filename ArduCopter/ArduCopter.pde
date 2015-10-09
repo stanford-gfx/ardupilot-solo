@@ -912,7 +912,7 @@ static void fast_loop()
 #endif //HELI_FRAME
 
     // send outputs to the motors library
-    motors_output();
+    //motors_output();
 
     // Inertial Nav
     // --------------------
@@ -1029,7 +1029,7 @@ static void fifty_hz_logging_loop()
 {
 #if HIL_MODE != HIL_MODE_DISABLED
     // HIL for a copter needs very fast update of the servo values
-    gcs_send_message(MSG_RADIO_OUT);
+    gcs_send_message(MSG_RADIO_OUT); 
 #endif
 
 #if HIL_MODE == HIL_MODE_DISABLED

@@ -66,9 +66,10 @@
 #define AP_MOTORS_THR_MIX_MIN_DEFAULT   0.1f    // minimum throttle mix
 #define AP_MOTORS_THR_MIX_MID_DEFAULT   0.5f    // manual throttle mix
 #define AP_MOTORS_THR_MIX_MAX_DEFAULT   0.9f    // maximum throttle mix
+
 #define AP_MOTORS_SLEW_ENABLED_DEFAULT  0       // slew rate control enabled by default
-#define AP_MOTORS_SLEW_RATE_DEFAULT     0.01f   // maximum percent rate of change of the motor output
-#define AP_MOTORS_SLEW_RATE_D_DEFAULT  -0.05f   // the rate of change of the slew rate 
+#define AP_MOTORS_SLEW_RATE_DEFAULT     0.01f   // maximum rate of change of the motor pwm as a fraction of the full range
+#define AP_MOTORS_SLEW_TRIG_DEFAULT     0.80f   // the pwm (as a fraction of the full range) at which the motor slew rate control is enabled
 
 // bit mask for recording which limits we have reached when outputting to motors
 #define AP_MOTOR_NO_LIMITS_REACHED  0x00
@@ -283,9 +284,10 @@ protected:
     AP_Float            _batt_voltage_min;      // minimum voltage used to scale lift
     AP_Float            _batt_current_max;      // current over which maximum throttle is limited
     AP_Float            _thr_mix_min;           // current over which maximum throttle is limited
-    AP_Int16            _slew_enabled;          // wether or not slew rate control is enabled (0 - yes, 1 - no)
-    AP_Float            _slew_rate;             // maximum rate of change of the output sent to motors
-    AP_Float            _slew_rate_d;           // the rate of change of the slew rate
+    
+    AP_Int16            _slew_enabled;          // whether or not slew rate control is enabled (0 - yes, 1 - no)
+    AP_Float            _slew_rate;             // maximum rate of change of the pwm output sent to motors
+    AP_Float            _slew_trigger;          // the pwm at which the slew rate controls gets enabled
 
     // internal variables
     RC_Channel&         _rc_roll;               // roll input in from users is held in servo_out

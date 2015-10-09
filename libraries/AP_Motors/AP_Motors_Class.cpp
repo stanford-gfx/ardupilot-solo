@@ -102,24 +102,24 @@ const AP_Param::GroupInfo AP_Motors::var_info[] PROGMEM = {
 
     // @Param: SLEW_ENABLED
     // @DisplayName: Motor Output Slew Rate Control Enabled
-    // @Description: Wether or not slew rate control is running
+    // @Description: Whether or not slew rate control is enabled
     // @Valued: 0:yes,1:no
     // @User: Advanced
     AP_GROUPINFO("SLEW_ENABLED", 14, AP_Motors, _slew_enabled, AP_MOTORS_SLEW_ENABLED_DEFAULT),
 
     // @Param: SLEW_RATE
     // @DisplayName: Motor Output Slew Rate
-    // @Description: The maximum rate of change of the pwm values being sent to the motors while close to the maximum voltage, as a percent of the maximum value
+    // @Description: The maximum rate of change of the pwm values being sent to the motors, as a fraction of the full range
     // @Range: 0 1
     // @User: Advanced
     AP_GROUPINFO("SLEW_RATE", 15, AP_Motors, _slew_rate, AP_MOTORS_SLEW_RATE_DEFAULT),
 
-    // @Param: SLEW_RATE_D
-    // @DisplayName: Motor Output Slew Rate Derivative
-    // @Description: The rate of change of the slew rate. A value of 0 corresponds to a fixed slew rate over the entire output spectrum. A non-zero value makes the slew rate quadratic
-    // @Range: -1000 1000
+    // @Param: SLEW_TRIG
+    // @DisplayName: Motor Output Slew Rate Trigger
+    // @Description: The pwm (as a fraction of the full range) at which the slew rate control gets enabled.
+    // @Range: 0 1
     // @User: Advanced
-    AP_GROUPINFO("SLEW_RATE_D", 16, AP_Motors, _slew_rate_d, AP_MOTORS_SLEW_RATE_D_DEFAULT),
+    AP_GROUPINFO("SLEW_TRIG", 16, AP_Motors, _slew_trigger, AP_MOTORS_SLEW_TRIG_DEFAULT),
 
     AP_GROUPEND
 };

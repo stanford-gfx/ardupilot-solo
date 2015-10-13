@@ -935,8 +935,6 @@ static void fast_loop()
     gps_glitch_update();
 
     camera_mount.update_fast();
-
-    gcs_send_message(MSG_LOCAL_POSITION);
 }
 
 // rc_loops - reads user input from transmitter/receiver
@@ -971,6 +969,8 @@ static void throttle_loop()
     // update trad heli swash plate movement
     heli_update_landing_swash();
 #endif
+
+    gcs_send_message(MSG_LOCAL_POSITION);
 }
 
 // update_mount - update camera mount position

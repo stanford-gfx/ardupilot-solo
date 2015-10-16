@@ -906,26 +906,6 @@ static void fast_loop()
 
     // run low level rate controllers that only require IMU data
     attitude_control.rate_controller_run();
-
-    static uint32_t testmode_start_ms = 0;
-    if (control_mode != LOITER) {
-        testmode_start_ms = millis();
-    } else if (millis()-testmode_start_ms > 2000) {
-        static const float wiggle_step_time = 0.5f;
-        static const float wiggle_interval = 5.0f;
-        switch(((millis()-testmode_start_ms+2000)/((int32_t)(wiggle_step_time*1000 + 0.5f))) % ((int32_t)(wiggle_interval/wiggle_step_time + 0.5f))) {
-            case 0:
-                motors.set_yaw(-4500);
-                break;
-            case 1:
-                motors.set_yaw(4500);
-                break;
-            case 2:
-                motors.set_yaw(-4500);
-            default:
-                break;
-        }
-    }
     
 #if FRAME_CONFIG == HELI_FRAME
     update_heli_control_dynamics();

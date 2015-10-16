@@ -409,11 +409,6 @@ void AC_AttitudeControl::rate_bf_roll_pitch_yaw(float roll_rate_bf, float pitch_
     _rate_bf_target += _rate_bf_desired;
 }
 
-void AC_AttitudeControl::set_mav_yaw_er(float _mav_value)
-{
-    _mav_yaw_er = _mav_value;
-}
-
 //
 // rate_controller_run - run lowest level body-frame rate controller and send outputs to the motors
 //      should be called at 100hz or more

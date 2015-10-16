@@ -67,9 +67,9 @@
 #define AP_MOTORS_THR_MIX_MID_DEFAULT   0.5f    // manual throttle mix
 #define AP_MOTORS_THR_MIX_MAX_DEFAULT   0.9f    // maximum throttle mix
 
-#define AP_MOTORS_SLEW_ENABLED_DEFAULT  0       // slew rate control enabled by default
-#define AP_MOTORS_SLEW_RATE_DEFAULT     0.01f   // maximum rate of change of the motor pwm as a fraction of the full range
-#define AP_MOTORS_SLEW_TRIG_DEFAULT     0.80f   // the pwm (as a fraction of the full range) at which the motor slew rate control is enabled
+#define AP_MOTORS_SLEW_ENABLED_DEFAULT  1       // slew rate control enabled by default
+#define AP_MOTORS_SLEW_RATE_DEFAULT     6       // maximum rate of change of the motor pwm as a fraction of the full range
+#define AP_MOTORS_SLEW_TRIG_DEFAULT     1330    // the pwm (as a fraction of the full range) at which the motor slew rate control is enabled
 
 // bit mask for recording which limits we have reached when outputting to motors
 #define AP_MOTOR_NO_LIMITS_REACHED  0x00

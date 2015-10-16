@@ -71,11 +71,9 @@ public:
     //  this can be used to ensure other pwm outputs (i.e. for servos) do not conflict
     virtual uint16_t    get_motor_mask();
 
-    void                output_armed_stabilizing();
-
-
 protected:
     // output - sends commands to the motors
+    void                output_armed_stabilizing();
     void                output_armed_not_stabilizing();
     void                output_disarmed();
 

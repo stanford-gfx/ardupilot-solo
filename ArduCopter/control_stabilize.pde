@@ -7,6 +7,11 @@
 // stabilize_init - initialise stabilize controller
 static bool stabilize_init(bool ignore_checks)
 {
+    // requires RC input
+    if (!ignore_checks && failsafe.radio) {
+        return false;
+    }
+    
     // if landed and the mode we're switching from does not have manual throttle and the throttle stick is too high
     if (motors.armed() && ap.land_complete && !mode_has_manual_throttle(control_mode) && g.rc_3.control_in > get_non_takeoff_throttle()) {
         return false;

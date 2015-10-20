@@ -7,6 +7,11 @@
 // loiter_init - initialise loiter controller
 static bool loiter_init(bool ignore_checks)
 {
+    // requires RC input
+    if (!ignore_checks && failsafe.radio) {
+        return false;
+    }
+    
     if (!ignore_checks && failsafe.gps_glitch) {
         return false;
     }

@@ -4,8 +4,6 @@
 #define MOT_RECOVERY_LOW_AVG_THRESHOLD 0.77f
 #define MOT_RECOVERY_DETECTION_TIME 0.2f
 #define MOT_RECOVERY_POST_DELAY 0.75f
-#define MOT_RECOVERY_MOTOR_PCT 0.5f
-#define MOT_RECOVERY_RAMP_TIME 0.25f
 #define MOT_RECOVERY_MOT_FILT_HZ 5.0f
 
 uint8_t last_highest_motor = 0;
@@ -74,8 +72,8 @@ static void update_motor_fail_detector() {
         // if we don't meet the failure criteria, reset fail timer
         motor_fail_start_time = tnow_ms;
     } else if(tnow_ms-motor_fail_start_time > MOT_RECOVERY_DETECTION_TIME*1.0e3f) {
-        // if criteria for a motor failure are met continuously for MOT_RECOVERY_DETECTION_TIME seconds, attempt a restart on that motor
-        motors.do_motor_recovery(0xFF, MOT_RECOVERY_MOTOR_PCT, MOT_RECOVERY_RAMP_TIME);
+        // if criteria for a motor failure are met continuously for g.motors_recovery_time seconds, attempt a restart on that motor
+        motors.do_motor_recovery(0xFF, g.motors_recovery_pct, g.motors_recovery_time);
     }
 
     last_highest_motor = highest_motor_index;

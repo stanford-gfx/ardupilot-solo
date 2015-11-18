@@ -166,6 +166,8 @@ public:
         // 90: Motors
         //
         k_param_motors = 90,
+        k_param_motors_recovery_pct,
+        k_param_motors_recovery_time,
 
         //
         // 100: Inertial Nav
@@ -426,6 +428,9 @@ public:
     AP_Int8         land_repositioning;
     AP_Int8         fs_ekf_action;
     AP_Float        fs_ekf_thresh;
+
+    AP_Float        motors_recovery_pct;
+    AP_Float        motors_recovery_time;
 
 #if FRAME_CONFIG ==     HELI_FRAME
     // Heli

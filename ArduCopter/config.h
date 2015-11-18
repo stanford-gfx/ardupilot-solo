@@ -692,6 +692,16 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
+// Motors
+//
+#ifndef MOTORS_RECOVERY_PCT_DEFAULT
+  # define MOTORS_RECOVERY_PCT_DEFAULT 0.5f
+#endif
+#ifndef MOTORS_RECOVERY_TIME_DEFAULT
+  # define MOTORS_RECOVERY_TIME_DEFAULT 0.25f
+#endif
+
+//////////////////////////////////////////////////////////////////////////////
 // Dataflash logging control
 //
 #ifndef LOGGING_ENABLED

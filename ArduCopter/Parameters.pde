@@ -648,6 +648,20 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @User: Advanced
     GSCALAR(acro_expo,  "ACRO_EXPO",    ACRO_EXPO_DEFAULT),
 
+    // @Param: MOT_RECOVER_PCT
+    // @DisplayName: Motors Recovery Percentage
+    // @Description: When esc failure is detected, the maximum motor command is reduced to this percentage of the normal maximum
+    // @Range: 0 1
+    // @User: Advanced
+    GSCALAR(motors_recovery_pct, "MOT_RECOVER_PCT", MOTORS_RECOVERY_PCT_DEFAULT),
+
+    // @Param: MOT_RECOVER_TIME
+    // @DisplayName: Motors Recovery Ramp Time
+    // @Description: When esc failure is detected, the time it takes to get back from the recovery percentage to the normal maximum
+    // @Range: 0.0025 1
+    // @User: Advanced
+    GSCALAR(motors_recovery_time, "MOT_RECOVER_TIME", MOTORS_RECOVERY_TIME_DEFAULT),
+
     // PID controller
     //---------------
 

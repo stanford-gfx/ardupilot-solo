@@ -154,7 +154,28 @@ void AP_Mount_Servo::stabilize()
         // lead filter
         const Vector3f &gyro = _frontend._ahrs.get_gyro();
 
-        if (_state._stab_roll && _state._roll_stb_lead != 0.0f && fabsf(_frontend._ahrs.pitch) < M_PI/3.0f) {
+        float sin_theta = _frontend._ahrs.sin_pitch();
+        float cos_theta = _frontend._ahrs.cos_pitch();
+
+        float sin_phi = _frontend._ahrs.sin_roll();
+        float cos_phi = _frontend._ahrs.cos_roll();
+        float sec_phi = 1.0f/cos_phi;
+        float tan_phi = sin_phi/cos_phi;
+
+        // for roll->pitch servo gimbal
+        if (_state._stab_roll && _state._roll_stb_lead != 0.0f) {
+            // Compute rate of change of euler roll angle
+            float roll_rate = gyro.x*cos_theta+gyro.z*sin_theta;
+            _angle_bf_output_deg.x -= degrees(roll_rate) * _state._roll_stb_lead;
+        }
+
+        if (_state._stab_tilt && _state._pitch_stb_lead != 0.0f && fabsf(_frontend._ahrs.roll) < M_PI/3.0f) {
+            // Compute rate of change of euler pitch angle
+            float pitch_rate = gyro.x*sin_theta*tan_phi-gyro.z*cos_theta*tan_phi+gyro.y;
+            _angle_bf_output_deg.y -= degrees(pitch_rate) * _state._pitch_stb_lead;
+        }
+
+        /*if (_state._stab_roll && _state._roll_stb_lead != 0.0f && fabsf(_frontend._ahrs.pitch) < M_PI/3.0f) {
             // Compute rate of change of euler roll angle
             float roll_rate = gyro.x + (_frontend._ahrs.sin_pitch() / _frontend._ahrs.cos_pitch()) * (gyro.y * _frontend._ahrs.sin_roll() + gyro.z * _frontend._ahrs.cos_roll());
             _angle_bf_output_deg.x -= degrees(roll_rate) * _state._roll_stb_lead;
@@ -164,7 +185,7 @@ void AP_Mount_Servo::stabilize()
             // Compute rate of change of euler pitch angle
             float pitch_rate = _frontend._ahrs.cos_pitch() * gyro.y - _frontend._ahrs.sin_roll() * gyro.z;
             _angle_bf_output_deg.y -= degrees(pitch_rate) * _state._pitch_stb_lead;
-        }
+        }*/
     }
 }
 

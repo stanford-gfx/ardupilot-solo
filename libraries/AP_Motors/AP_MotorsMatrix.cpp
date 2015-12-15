@@ -384,6 +384,12 @@ void AP_MotorsMatrix::output_armed_stabilizing()
     }
 }
 
+void AP_MotorsMatrix::output_armed_stabilizing_simple()
+{
+    // TODO
+    // reads _f1 _f2 _f3 _f4 and sends the corresponding PWM
+}
+
 // output_disarmed - sends commands to the motors
 void AP_MotorsMatrix::output_disarmed()
 {

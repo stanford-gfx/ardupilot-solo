@@ -61,8 +61,10 @@ public:
         _pid_rate_yaw(pid_rate_yaw),
         _dt(AC_ATTITUDE_100HZ_DT),
         _angle_boost(0),
-        _acro_angle_switch(0)
-		{
+        _acro_angle_switch(0),
+        _propctrl_rho(0),
+        _throttle_out(0)
+        {
 			AP_Param::setup_object_defaults(this, var_info);
 
 			// initialise flags
@@ -123,6 +125,8 @@ public:
     //      should be called at 100hz or more
     //
     virtual void rate_controller_run();
+
+    virtual void prop_controller_run();
 
     //
     // earth-frame <-> body-frame conversion functions
@@ -190,6 +194,10 @@ public:
 
      // angle_boost - accessor for angle boost so it can be logged
      int16_t angle_boost() const { return _angle_boost; }
+
+     void set_propctrl_rho(float propctrl_rho) { _propctrl_rho = propctrl_rho; }
+
+     void set_n_wf(const Vector3f& n_wf) { _n_wf = n_wf; }
 
     //
     // helper functions
@@ -284,6 +292,10 @@ protected:
     Vector3f            _rate_bf_desired;       // body-frame feed forward rates
     int16_t             _angle_boost;           // used only for logging
     int16_t             _acro_angle_switch;           // used only for logging
+    float               _propctrl_rho;          // used by the controller that can handle prop loss
+    Vector3f            _n_wf                   // n vector in world frame
+    Vector3f            _n_bf                   // n vector in body frame
+    float               _throttle_out
 };
 
 #define AC_ATTITUDE_CONTROL_LOG_FORMAT(msg) { msg, sizeof(AC_AttitudeControl::log_Attitude),	\

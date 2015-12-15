@@ -127,6 +127,8 @@ public:
     void                set_throttle(float throttle_in) { _throttle_in = throttle_in; };    // range 0 ~ 1000
     void                set_stabilizing(bool stabilizing) { _flags.stabilizing = stabilizing; }
 
+    void                set_thrusts(float f1, float f2, float f3, float f4) { _f1 = f1; _f2 = f2; _f3 = f3; _f4 = f4;}
+
     // accessors for roll, pitch, yaw and throttle inputs to motors
     int16_t             get_roll() const { return _rc_roll.servo_out; }
     int16_t             get_pitch() const { return _rc_pitch.servo_out; }
@@ -137,6 +139,9 @@ public:
 
     // output - sends commands to the motors
     void                output();
+
+    // simple output - sends the commands to the motors using the simpler mixer
+    void                simple_output();
 
     // output_min - sends minimum values out to the motors
     virtual void        output_min() = 0;
@@ -222,6 +227,7 @@ protected:
     virtual void        output_armed_stabilizing()=0;
     virtual void        output_armed_not_stabilizing()=0;
     virtual void        output_disarmed()=0;
+    virtual void        output_armed_stabilizing_simple()=0;
 
     // update the throttle input filter
     void                update_throttle_filter();
@@ -312,5 +318,11 @@ protected:
     uint8_t _recovery_motor_mask;
     float _recovery_pct;
     float _recovery_ramp_time;
+
+    // thrusts for the simple motor mixer
+    float _f1;
+    float _f2;
+    float _f3;
+    float _f4;
 };
 #endif  // __AP_MOTORS_CLASS_H__

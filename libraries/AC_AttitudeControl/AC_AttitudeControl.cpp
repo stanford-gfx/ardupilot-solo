@@ -458,6 +458,33 @@ void AC_AttitudeControl::rate_controller_run()
     _motors.set_yaw(rate_bf_to_motor_yaw(_rate_bf_target.z));
 }
 
+void AC_AttitudeControl::prop_controller_run()
+{
+
+    // transforms n from world to body frame
+    Matrix3f _ahrs.get_dcm_matrix();
+    m = m.transposed();
+    _n_bf = m * _n_wf;
+
+    float f1_nominal = _throttle_out/(2.0f+_propctrl_rho);
+    float f2_nominal = _propctrl_rho*f1_nominal;
+
+    // TODO: get K from George
+    // s = [p q nx ny] = [_ahrs.get_gyro_for_control().x _ahrs.get_gyro_for_control().y _n_bf.x _n_bf.y]
+    // u = -K*s = [(f3-f3nominal)-(f1-f1nominal) (f2-f2nominal)]
+    float u1 = 0.0f;
+    float u2 = 0.0f;
+
+    // compute [f1 f2 f3 f4]
+    float f2 = f2_nominal + u2;
+    float f3 = (u1 + _throttle_out - f2)/2.0f;
+    float f1 = f3 - u1;
+    float f4 = 0.0f;
+
+    _motors.set_thrusts(f1,f2,f3,f4);
+
+}
+
 //
 // earth-frame <-> body-frame conversion functions
 //
@@ -756,6 +783,7 @@ void AC_AttitudeControl::set_throttle_out(float throttle_out, bool apply_angle_b
         // clear angle_boost for logging purposes
         _angle_boost = 0;
     }
+    _throttle_out = throttle_out;
 }
 
 // outputs a throttle to all motors evenly with no attitude stabilization

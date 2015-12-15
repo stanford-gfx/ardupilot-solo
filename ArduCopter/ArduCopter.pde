@@ -898,15 +898,25 @@ static void fast_loop()
     // --------------------
     read_AHRS();
 
-    // run low level rate controllers that only require IMU data
-    attitude_control.rate_controller_run();
+    if (control_mode == ACRO) {
+      // run the controller that can handle prop failure
+      attitude_control.prop_controller_run();
+    } else {
+      // run low level rate controllers that only require IMU data
+      attitude_control.rate_controller_run();
+    }
     
 #if FRAME_CONFIG == HELI_FRAME
     update_heli_control_dynamics();
 #endif //HELI_FRAME
 
-    // send outputs to the motors library
-    motors_output();
+    if (control_mode == ACRO) {
+      // run the simple motor mixer
+      motors_simple_output();
+    } else {
+      // send outputs to the motors library
+      motors_output();
+    }
 
     // Inertial Nav
     // --------------------

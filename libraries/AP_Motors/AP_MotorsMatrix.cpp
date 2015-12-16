@@ -384,10 +384,20 @@ void AP_MotorsMatrix::output_armed_stabilizing()
     }
 }
 
-void AP_MotorsMatrix::output_armed_stabilizing_simple()
+void AP_MotorsMatrix::output_armed_stabilizing_thrust_to_pwm()
 {
-    // TODO
-    // reads _f1 _f2 _f3 _f4 and sends the corresponding PWM
+    int16_t pwm1 = (int16_t) ((_f1-AP_MOTORS_PWM_TO_THRUST_INTER)/AP_MOTORS_PWM_TO_THRUST_SLOPE);
+    int16_t pwm2 = (int16_t) ((_f2-AP_MOTORS_PWM_TO_THRUST_INTER)/AP_MOTORS_PWM_TO_THRUST_SLOPE);
+    int16_t pwm3 = (int16_t) ((_f3-AP_MOTORS_PWM_TO_THRUST_INTER)/AP_MOTORS_PWM_TO_THRUST_SLOPE);
+    int16_t pwm4 = (int16_t) ((_f4-AP_MOTORS_PWM_TO_THRUST_INTER)/AP_MOTORS_PWM_TO_THRUST_SLOPE);
+
+    // TODO: a bunch of safety checks to constrain the pwm
+
+    // send output to each motor
+    hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_1]), pwm1);
+    hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_2]), pwm2);
+    hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_3]), pwm3);
+    hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_4]), pwm4);
 }
 
 // output_disarmed - sends commands to the motors

@@ -130,7 +130,7 @@ AP_Motors::AP_Motors(RC_Channel& rc_roll, RC_Channel& rc_pitch, RC_Channel& rc_t
     _throttle_filter(),
     _recovery_pct(1.0f),
     _recovery_motor_mask(0),
-    _recovery_ramp_time(0.25f)
+    _recovery_ramp_time(0.25f),
     _f1(0.0f),
     _f2(0.0f),
     _f3(0.0f),
@@ -217,30 +217,11 @@ void AP_Motors::output()
     }
 };
 
-// output - sends commands to the motors using the simple motor mixer
-void AP_Motors::simple_output()
+void AP_Motors::output_thrust_to_pwm()
 {
-    // update throttle filter
-    update_throttle_filter();
-
-    // update max throttle
-    update_max_throttle();
-
-    // update _recovery_pct
-    update_recovery_pct();
-
-    // update battery resistance
-    update_battery_resistance();
-
-    // calc filtered battery voltage and lift_max
-    update_lift_max_from_batt_voltage();
-
-    // move throttle_low_comp towards desired throttle low comp
-    update_throttle_thr_mix();
-
     if (_flags.armed) {
         if (_flags.stabilizing) {
-            output_armed_stabilizing_simple();
+            output_armed_stabilizing_thrust_to_pwm();
         } else {
             output_armed_not_stabilizing();
         }

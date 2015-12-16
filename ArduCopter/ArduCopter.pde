@@ -900,7 +900,7 @@ static void fast_loop()
 
     if (control_mode == ACRO) {
       // run the controller that can handle prop failure
-      attitude_control.prop_controller_run();
+      attitude_control.reduced_attitude_controller_run();
     } else {
       // run low level rate controllers that only require IMU data
       attitude_control.rate_controller_run();
@@ -912,7 +912,7 @@ static void fast_loop()
 
     if (control_mode == ACRO) {
       // run the simple motor mixer
-      motors_simple_output();
+      motors_output_thrust_to_pwm();
     } else {
       // send outputs to the motors library
       motors_output();

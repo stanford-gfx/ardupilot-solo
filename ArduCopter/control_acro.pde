@@ -12,9 +12,8 @@ static bool acro_init(bool ignore_checks)
         return false;
     }
     
-    // initializes the desired n vector in earth frame
-    Vector3f _n_wf_setpoint(0,0,1); 
-    attitude_control.set_n_wf(_n_wf_setpoint);
+    // initializes the desired n vector in NED
+    attitude_control.set_n_ned(Vector3f(0,0,-1));
 
     return true;
 }
@@ -25,7 +24,7 @@ static void acro_run()
 {
 
     int16_t pilot_throttle_scaled;
-    float propctrl_rho;
+    float reduced_att_rho;
 
     // if motors not running reset angle targets
     if(!motors.armed() || g.rc_3.control_in <= 0) {
@@ -37,13 +36,13 @@ static void acro_run()
     pilot_throttle_scaled = get_pilot_desired_throttle(g.rc_3.control_in);
 
     // output pilot's throttle without angle boost
-    attitude_control.set_throttle_out(pilot_throttle_scaled, false, g.throttle_filt);
+    attitude_control.set_throttle_out(pilot_throttle_scaled,false,g.throttle_filt);
 
     // get the pilot's desired rho factor (f2/f1)
-    propctrl_rho = ((float)g.rc_2.control_in-1000.0f)/2000.0f;
+    reduced_att_rho = ((float)g.rc_2.control_in-1000.0f)/1000.0f;
 
     // sets the rho factor (f2/f1) in the prop controller
-    attitude_control.set_propctrl_rho(propctrl_rho);
+    attitude_control.set_reduced_att_rho(reduced_att_rho);
 }
 
 

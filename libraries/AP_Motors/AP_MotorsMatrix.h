@@ -14,6 +14,9 @@
 #define AP_MOTORS_MATRIX_YAW_FACTOR_CW   -1
 #define AP_MOTORS_MATRIX_YAW_FACTOR_CCW   1
 
+#define AP_MOTORS_PWM_TO_THRUST_SLOPE     0.00691f
+#define AP_MOTORS_PWM_TO_THRUST_INTER    -7.371f
+
 /// @class      AP_MotorsMatrix
 class AP_MotorsMatrix : public AP_Motors {
 public:
@@ -68,9 +71,9 @@ public:
 protected:
     // output - sends commands to the motors
     void                output_armed_stabilizing();
+    void                output_armed_stabilizing_thrust_to_pwm();
     void                output_armed_not_stabilizing();
     void                output_disarmed();
-    void                output_armed_stabilizing_simple();
 
     // add_motor using raw roll, pitch, throttle and yaw factors
     void                add_motor_raw(int8_t motor_num, float roll_fac, float pitch_fac, float yaw_fac, uint8_t testing_order);

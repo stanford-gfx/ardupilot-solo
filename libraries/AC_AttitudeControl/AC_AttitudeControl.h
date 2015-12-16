@@ -42,6 +42,17 @@
 
 #define AC_ATTITUDE_CONTROL_RATE_BF_FF_DEFAULT          1       // body-frame rate feedforward enabled by default
 
+// Reduced attitude controller coefficients
+#define AC_REDUCED_ATT_K11                              1.0f
+#define AC_REDUCED_ATT_K12                              1.0f
+#define AC_REDUCED_ATT_K13                              1.0f
+#define AC_REDUCED_ATT_K14                              1.0f
+#define AC_REDUCED_ATT_K21                              1.0f
+#define AC_REDUCED_ATT_K22                              1.0f
+#define AC_REDUCED_ATT_K23                              1.0f
+#define AC_REDUCED_ATT_K24                              1.0f
+
+
 class AC_AttitudeControl {
 public:
 	AC_AttitudeControl( AP_AHRS &ahrs,
@@ -62,7 +73,7 @@ public:
         _dt(AC_ATTITUDE_100HZ_DT),
         _angle_boost(0),
         _acro_angle_switch(0),
-        _propctrl_rho(0),
+        _reduced_att_rho(0),
         _throttle_out(0)
         {
 			AP_Param::setup_object_defaults(this, var_info);
@@ -126,7 +137,7 @@ public:
     //
     virtual void rate_controller_run();
 
-    virtual void prop_controller_run();
+    virtual void reduced_attitude_controller_run();
 
     //
     // earth-frame <-> body-frame conversion functions
@@ -195,9 +206,9 @@ public:
      // angle_boost - accessor for angle boost so it can be logged
      int16_t angle_boost() const { return _angle_boost; }
 
-     void set_propctrl_rho(float propctrl_rho) { _propctrl_rho = propctrl_rho; }
+     void set_reduced_att_rho(float reduced_att_rho) { _reduced_att_rho = reduced_att_rho; }
 
-     void set_n_wf(const Vector3f& n_wf) { _n_wf = n_wf; }
+     void set_n_ned(const Vector3f& n_ned) { _n_ned = n_ned; }
 
     //
     // helper functions
@@ -292,10 +303,10 @@ protected:
     Vector3f            _rate_bf_desired;       // body-frame feed forward rates
     int16_t             _angle_boost;           // used only for logging
     int16_t             _acro_angle_switch;           // used only for logging
-    float               _propctrl_rho;          // used by the controller that can handle prop loss
-    Vector3f            _n_wf                   // n vector in world frame
-    Vector3f            _n_bf                   // n vector in body frame
-    float               _throttle_out
+    float               _throttle_out;
+    float               _reduced_att_rho;       // f2/f1 used by the reduced attitude 
+    Vector3f            _n_ned;                 // n vector for reduced attitude control in NED frame
+    Vector3f            _n_bf;                  // n vector for reduced attitude control in body frame
 };
 
 #define AC_ATTITUDE_CONTROL_LOG_FORMAT(msg) { msg, sizeof(AC_AttitudeControl::log_Attitude),	\

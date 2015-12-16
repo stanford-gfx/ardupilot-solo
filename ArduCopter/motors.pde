@@ -776,14 +776,13 @@ static void motors_output()
     }
 }
 
-// motors_simple_output - send output to motors library which will adjust and send to ESCs and servos, using the simple motor mixer
-static void motors_simple_output()
+static void motors_output_thrust_to_pwm()
 {
     // check if we are performing the motor test
     if (ap.motor_test) {
         motor_test_output();
     } else {
-        motors.simple_output();
+        motors.output_thrust_to_pwm();
     }
 }
 

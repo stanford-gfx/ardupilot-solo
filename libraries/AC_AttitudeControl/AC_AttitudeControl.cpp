@@ -458,22 +458,20 @@ void AC_AttitudeControl::rate_controller_run()
     _motors.set_yaw(rate_bf_to_motor_yaw(_rate_bf_target.z));
 }
 
-void AC_AttitudeControl::prop_controller_run()
+void AC_AttitudeControl::reduced_attitude_controller_run()
 {
 
-    // transforms n from world to body frame
-    Matrix3f _ahrs.get_dcm_matrix();
-    m = m.transposed();
-    _n_bf = m * _n_wf;
+    // NED to body frame
+    frame_conversion_ef_to_bf(Vector3f(_n_ned.x,_n_ned.y,-_n_ned.z),_n_bf);
+    Vector3f pqr = _ahrs.get_gyro_for_control();
 
-    float f1_nominal = _throttle_out/(2.0f+_propctrl_rho);
-    float f2_nominal = _propctrl_rho*f1_nominal;
-
-    // TODO: get K from George
     // s = [p q nx ny] = [_ahrs.get_gyro_for_control().x _ahrs.get_gyro_for_control().y _n_bf.x _n_bf.y]
     // u = -K*s = [(f3-f3nominal)-(f1-f1nominal) (f2-f2nominal)]
-    float u1 = 0.0f;
-    float u2 = 0.0f;
+    float u1 = -1.0f * (AC_REDUCED_ATT_K11 * pqr.x + AC_REDUCED_ATT_K12 * pqr.y + AC_REDUCED_ATT_K13 * _n_bf.x + AC_REDUCED_ATT_K14 * _n_bf.y) ;
+    float u2 = -1.0f * (AC_REDUCED_ATT_K21 * pqr.x + AC_REDUCED_ATT_K22 * pqr.y + AC_REDUCED_ATT_K23 * _n_bf.x + AC_REDUCED_ATT_K24 * _n_bf.y) ;
+
+    float f1_nominal = _throttle_out/(2.0f+_reduced_att_rho);
+    float f2_nominal = _reduced_att_rho*f1_nominal;
 
     // compute [f1 f2 f3 f4]
     float f2 = f2_nominal + u2;
@@ -481,8 +479,8 @@ void AC_AttitudeControl::prop_controller_run()
     float f1 = f3 - u1;
     float f4 = 0.0f;
 
+    // sets the thrusts for the motor mixer
     _motors.set_thrusts(f1,f2,f3,f4);
-
 }
 
 //
@@ -778,12 +776,13 @@ void AC_AttitudeControl::set_throttle_out(float throttle_out, bool apply_angle_b
     _motors.set_throttle_filter_cutoff(filter_cutoff);
     if (apply_angle_boost) {
         _motors.set_throttle(get_boosted_throttle(throttle_out));
+        _throttle_out = get_boosted_throttle(throttle_out);
     }else{
         _motors.set_throttle(throttle_out);
+        _throttle_out = throttle_out;
         // clear angle_boost for logging purposes
         _angle_boost = 0;
     }
-    _throttle_out = throttle_out;
 }
 
 // outputs a throttle to all motors evenly with no attitude stabilization

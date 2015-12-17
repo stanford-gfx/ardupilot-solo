@@ -43,14 +43,38 @@
 #define AC_ATTITUDE_CONTROL_RATE_BF_FF_DEFAULT          1       // body-frame rate feedforward enabled by default
 
 // Reduced attitude controller coefficients
-#define AC_REDUCED_ATT_K11                              1.0f
-#define AC_REDUCED_ATT_K12                              1.0f
-#define AC_REDUCED_ATT_K13                              1.0f
-#define AC_REDUCED_ATT_K14                              1.0f
-#define AC_REDUCED_ATT_K21                              1.0f
-#define AC_REDUCED_ATT_K22                              1.0f
-#define AC_REDUCED_ATT_K23                              1.0f
-#define AC_REDUCED_ATT_K24                              1.0f
+#define AC_REDUCED_ATT_K11                              0.013448f
+#define AC_REDUCED_ATT_K12                              0.16466f
+#define AC_REDUCED_ATT_K13                             -8.0997f
+#define AC_REDUCED_ATT_K14                             -1.1245f
+#define AC_REDUCED_ATT_K15                              0.51051f
+#define AC_REDUCED_ATT_K16                             -0.27712f
+#define AC_REDUCED_ATT_K17                             -0.011706f
+
+#define AC_REDUCED_ATT_K21                             -0.0028388f
+#define AC_REDUCED_ATT_K22                             -0.15976
+#define AC_REDUCED_ATT_K23                              7.3918
+#define AC_REDUCED_ATT_K24                              1.2965
+#define AC_REDUCED_ATT_K25                             -0.27747
+#define AC_REDUCED_ATT_K26                              0.49103
+#define AC_REDUCED_ATT_K27                              0.02788
+
+#define AC_REDUCED_ATT_K31                              0.19441f
+#define AC_REDUCED_ATT_K32                             -0.028429f
+#define AC_REDUCED_ATT_K33                             -7.5969f
+#define AC_REDUCED_ATT_K34                              4.1555f
+#define AC_REDUCED_ATT_K35                             -0.018433f
+#define AC_REDUCED_ATT_K36                              0.034346f
+#define AC_REDUCED_ATT_K37                              0.54327f
+
+// Reduced attitude controller set points
+#define AC_REDUCED_ATT_P                               -2.9401f
+#define AC_REDUCED_ATT_Q                                3.3383f
+#define AC_REDUCED_ATT_NX                               0.073719f
+#define AC_REDUCED_ATT_NY                              -0.083704f
+#define AC_REDUCED_ATT_F1                               5.5f
+#define AC_REDUCED_ATT_F2                               4.5f
+#define AC_REDCUED_ATT_F3                               5.0048f
 
 
 class AC_AttitudeControl {
@@ -74,7 +98,9 @@ public:
         _angle_boost(0),
         _acro_angle_switch(0),
         _reduced_att_rho(0),
-        _throttle_out(0)
+        _last_f1(0),
+        _last_f2(0),
+        _last_f3(0)
         {
 			AP_Param::setup_object_defaults(this, var_info);
 
@@ -302,11 +328,13 @@ protected:
     Vector3f            _rate_ef_desired;       // earth-frame feed forward rates
     Vector3f            _rate_bf_desired;       // body-frame feed forward rates
     int16_t             _angle_boost;           // used only for logging
-    int16_t             _acro_angle_switch;           // used only for logging
-    float               _throttle_out;
+    int16_t             _acro_angle_switch;     // used only for logging
     float               _reduced_att_rho;       // f2/f1 used by the reduced attitude 
     Vector3f            _n_ned;                 // n vector for reduced attitude control in NED frame
     Vector3f            _n_bf;                  // n vector for reduced attitude control in body frame
+    float               _last_f1;
+    float               _last_f2;
+    float               _last_f3;
 };
 
 #define AC_ATTITUDE_CONTROL_LOG_FORMAT(msg) { msg, sizeof(AC_AttitudeControl::log_Attitude),	\

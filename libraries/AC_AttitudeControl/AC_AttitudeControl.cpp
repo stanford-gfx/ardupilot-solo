@@ -460,24 +460,27 @@ void AC_AttitudeControl::rate_controller_run()
 
 void AC_AttitudeControl::reduced_attitude_controller_run()
 {
-
     // NED to body frame
     frame_conversion_ef_to_bf(Vector3f(_n_ned.x,_n_ned.y,-_n_ned.z),_n_bf);
     Vector3f pqr = _ahrs.get_gyro_for_control();
 
-    // s = [p q nx ny] = [_ahrs.get_gyro_for_control().x _ahrs.get_gyro_for_control().y _n_bf.x _n_bf.y]
-    // u = -K*s = [(f3-f3nominal)-(f1-f1nominal) (f2-f2nominal)]
-    float u1 = -1.0f * (AC_REDUCED_ATT_K11 * pqr.x + AC_REDUCED_ATT_K12 * pqr.y + AC_REDUCED_ATT_K13 * _n_bf.x + AC_REDUCED_ATT_K14 * _n_bf.y) ;
-    float u2 = -1.0f * (AC_REDUCED_ATT_K21 * pqr.x + AC_REDUCED_ATT_K22 * pqr.y + AC_REDUCED_ATT_K23 * _n_bf.x + AC_REDUCED_ATT_K24 * _n_bf.y) ;
+    float s1_tilda = pqr.x - AC_REDUCED_ATT_P; 
+    float s2_tilda = pqr.y - AC_REDUCED_ATT_Q;
+    float s3_tilda = _n_bf.x - AC_REDUCED_ATT_NX;
+    float s4_tilda = _n_bf.y - AC_REDUCED_ATT_NY;
+    float s5_tilda = _last_f1 - AC_REDUCED_ATT_F1;
+    float s6_tilda = _last_f2 - AC_REDUCED_ATT_F2;
+    float s7_tilda = _last_f3 - AC_REDCUED_ATT_F3;
 
-    float f1_nominal = _throttle_out/(2.0f+_reduced_att_rho);
-    float f2_nominal = _reduced_att_rho*f1_nominal;
-
-    // compute [f1 f2 f3 f4]
-    float f2 = f2_nominal + u2;
-    float f3 = (u1 + _throttle_out - f2)/2.0f;
-    float f1 = f3 - u1;
+    float f1 = -1.0f * (AC_REDUCED_ATT_K11 * s1_tilda + AC_REDUCED_ATT_K12 * s2_tilda + AC_REDUCED_ATT_K13 * s3_tilda + AC_REDUCED_ATT_K14 * s4_tilda + AC_REDUCED_ATT_K15 * s5_tilda + AC_REDUCED_ATT_K16 * s6_tilda + AC_REDUCED_ATT_K17 * s7_tilda);
+    float f2 = -1.0f * (AC_REDUCED_ATT_K21 * s1_tilda + AC_REDUCED_ATT_K22 * s2_tilda + AC_REDUCED_ATT_K23 * s3_tilda + AC_REDUCED_ATT_K24 * s4_tilda + AC_REDUCED_ATT_K25 * s5_tilda + AC_REDUCED_ATT_K26 * s6_tilda + AC_REDUCED_ATT_K27 * s7_tilda);
+    float f3 = -1.0f * (AC_REDUCED_ATT_K31 * s1_tilda + AC_REDUCED_ATT_K32 * s2_tilda + AC_REDUCED_ATT_K33 * s3_tilda + AC_REDUCED_ATT_K34 * s4_tilda + AC_REDUCED_ATT_K35 * s5_tilda + AC_REDUCED_ATT_K36 * s6_tilda + AC_REDUCED_ATT_K37 * s7_tilda);
     float f4 = 0.0f;
+
+    // keeps the last output for next state
+    _last_f1 = f1;
+    _last_f2 = f2;
+    _last_f3 = f3;
 
     // sets the thrusts for the motor mixer
     _motors.set_thrusts(f1,f2,f3,f4);
@@ -776,10 +779,8 @@ void AC_AttitudeControl::set_throttle_out(float throttle_out, bool apply_angle_b
     _motors.set_throttle_filter_cutoff(filter_cutoff);
     if (apply_angle_boost) {
         _motors.set_throttle(get_boosted_throttle(throttle_out));
-        _throttle_out = get_boosted_throttle(throttle_out);
     }else{
         _motors.set_throttle(throttle_out);
-        _throttle_out = throttle_out;
         // clear angle_boost for logging purposes
         _angle_boost = 0;
     }

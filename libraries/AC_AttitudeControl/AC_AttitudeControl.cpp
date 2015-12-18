@@ -3,6 +3,8 @@
 #include "AC_AttitudeControl.h"
 #include <AP_HAL.h>
 
+#include <stdio.h>
+
 // table of user settable parameters
 const AP_Param::GroupInfo AC_AttitudeControl::var_info[] PROGMEM = {
 
@@ -461,7 +463,9 @@ void AC_AttitudeControl::rate_controller_run()
 void AC_AttitudeControl::reduced_attitude_controller_run()
 {
     // NED to body frame
-    frame_conversion_ef_to_bf(Vector3f(_n_ned.x,_n_ned.y,-_n_ned.z),_n_bf);
+    Matrix3f m = _ahrs.get_dcm_matrix();
+    m = m.transposed();
+    _n_bf = m * _n_ned;
     Vector3f pqr = _ahrs.get_gyro_for_control();
 
     float s1_tilda = pqr.x - AC_REDUCED_ATT_P; 
@@ -476,6 +480,9 @@ void AC_AttitudeControl::reduced_attitude_controller_run()
     float f2 = -1.0f * (AC_REDUCED_ATT_K21 * s1_tilda + AC_REDUCED_ATT_K22 * s2_tilda + AC_REDUCED_ATT_K23 * s3_tilda + AC_REDUCED_ATT_K24 * s4_tilda + AC_REDUCED_ATT_K25 * s5_tilda + AC_REDUCED_ATT_K26 * s6_tilda + AC_REDUCED_ATT_K27 * s7_tilda);
     float f3 = -1.0f * (AC_REDUCED_ATT_K31 * s1_tilda + AC_REDUCED_ATT_K32 * s2_tilda + AC_REDUCED_ATT_K33 * s3_tilda + AC_REDUCED_ATT_K34 * s4_tilda + AC_REDUCED_ATT_K35 * s5_tilda + AC_REDUCED_ATT_K36 * s6_tilda + AC_REDUCED_ATT_K37 * s7_tilda);
     float f4 = 0.0f;
+
+    //::printf("nve:\t%4.4f\t%4.4f\t%4.4f\npqr:\t%4.4f\t%4.4f\t%4.4f\nfou:\t%4.4f\t%4.4f\t%4.4f\n",_n_bf.x,_n_bf.y,_n_bf.z,pqr.x,pqr.y,pqr.z,f1,f2,f3);
+    //::printf("nve:\t%4.4f\t%4.4f\npqr:\t%4.4f\t%4.4f\nfou:\t%4.4f\t%4.4f\t%4.4f\n",_n_bf.x,_n_bf.y,pqr.x,pqr.y,f1,f2,f3);
 
     // keeps the last output for next state
     _last_f1 = f1;

@@ -22,6 +22,7 @@
 #include <AP_HAL.h>
 #include "AP_MotorsMatrix.h"
 
+#include <stdio.h>
 extern const AP_HAL::HAL& hal;
 
 // Init
@@ -391,18 +392,25 @@ void AP_MotorsMatrix::output_armed_stabilizing_thrust_to_pwm()
     int16_t pwm3 = (int16_t) ((_f3-AP_MOTORS_PWM_TO_THRUST_INTER)/AP_MOTORS_PWM_TO_THRUST_SLOPE);
     int16_t pwm4 = (int16_t) ((_f4-AP_MOTORS_PWM_TO_THRUST_INTER)/AP_MOTORS_PWM_TO_THRUST_SLOPE);
 
+    //::printf("pwm before user throttle:\t%i\t%i\t%i\t%i\n",pwm1,pwm2,pwm3,pwm4);
+
     // add the user throttle
     _rc_throttle.calc_pwm();
-    pwm1 = pwm1 + _rc_throttle.radio_out;
-    pwm2 = pwm2 + _rc_throttle.radio_out;
-    pwm3 = pwm3 + _rc_throttle.radio_out;
-    pwm4 = pwm4 + _rc_throttle.radio_out;
+    pwm1 = pwm1 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
+    pwm2 = pwm2 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
+    pwm3 = pwm3 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
+    pwm4 = pwm4 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
 
     // a bunch of safety checks to constrain the pwm
     pwm1 = constrain_int16(pwm1, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
     pwm2 = constrain_int16(pwm2, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
     pwm3 = constrain_int16(pwm3, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
     pwm4 = constrain_int16(pwm4, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
+
+    // forcing motor 4 to be out completely
+    pwm4 = 0;
+
+    //::printf("pwm with user throttle:\t%i\t%i\t%i\t%i\n",pwm1,pwm2,pwm3,pwm4);
 
     // send output to each motor
     hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_1]), pwm1);

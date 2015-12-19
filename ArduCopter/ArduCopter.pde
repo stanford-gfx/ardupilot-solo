@@ -665,6 +665,8 @@ static AP_HAL::AnalogSource* rssi_analog_source;
 static AP_Mount camera_mount(ahrs, current_loc);
 #endif
 
+float redattctrl_poll[7];
+
 ////////////////////////////////////////////////////////////////////////////////
 // AC_Fence library to reduce fly-aways
 ////////////////////////////////////////////////////////////////////////////////
@@ -1090,6 +1092,12 @@ static void three_hz_loop()
 // one_hz_loop - runs at 1Hz
 static void one_hz_loop()
 {
+
+    // if (control_mode == ACRO) {
+    //   attitude_control.poll_reduced_att_ctrl(redattctrl_poll);
+    //   ::printf("%4.4f %4.4f %4.4f %4.4f %4.4f %4.4f %4.4f\n",redattctrl_poll[0],redattctrl_poll[1],redattctrl_poll[2],redattctrl_poll[3],redattctrl_poll[4],redattctrl_poll[5],redattctrl_poll[6]);
+    // }
+
     if (should_log(MASK_LOG_ANY)) {
         Log_Write_Data(DATA_AP_STATE, ap.value);
     }

@@ -23,8 +23,8 @@ static bool acro_init(bool ignore_checks)
 static void acro_run()
 {
 
+    float target_roll, target_pitch, target_yaw;
     int16_t pilot_throttle_scaled;
-    float reduced_att_rho;
 
     // if motors not running reset angle targets
     if(!motors.armed() || g.rc_3.control_in <= 0) {
@@ -32,17 +32,15 @@ static void acro_run()
         return;
     }
 
-    // get pilot's desired throttle
+    // get pilot's desired throttle and rates
     pilot_throttle_scaled = get_pilot_desired_throttle(g.rc_3.control_in);
+    get_pilot_desired_angle_rates(g.rc_1.control_in, g.rc_2.control_in, g.rc_4.control_in, target_roll, target_pitch, target_yaw);
+
+    // convert the input to the desired body frame rate
+    attitude_control.set_reduced_att_pqr(Vector3f(target_roll,target_pitch,target_yaw));
 
     // output pilot's throttle without angle boost
     attitude_control.set_throttle_out(pilot_throttle_scaled,false,g.throttle_filt);
-
-    // get the pilot's desired rho factor (f2/f1)
-    reduced_att_rho = ((float)g.rc_2.control_in-1000.0f)/1000.0f;
-
-    // sets the rho factor (f2/f1) in the prop controller
-    attitude_control.set_reduced_att_rho(reduced_att_rho);
 }
 
 

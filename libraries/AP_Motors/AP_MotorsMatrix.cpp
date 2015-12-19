@@ -396,10 +396,10 @@ void AP_MotorsMatrix::output_armed_stabilizing_thrust_to_pwm()
 
     // add the user throttle
     _rc_throttle.calc_pwm();
-    pwm1 = pwm1 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
-    pwm2 = pwm2 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
-    pwm3 = pwm3 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
-    pwm4 = pwm4 + _rc_throttle.control_in - _rc_throttle.get_control_mid();
+    pwm1 = pwm1 + _rc_throttle.control_in * 0.8f;
+    pwm2 = pwm2 + _rc_throttle.control_in * 0.8f;
+    pwm3 = pwm3 + _rc_throttle.control_in * 0.8f;
+    pwm4 = pwm4 + _rc_throttle.control_in * 0.8f;
 
     // a bunch of safety checks to constrain the pwm
     pwm1 = constrain_int16(pwm1, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
@@ -407,8 +407,9 @@ void AP_MotorsMatrix::output_armed_stabilizing_thrust_to_pwm()
     pwm3 = constrain_int16(pwm3, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
     pwm4 = constrain_int16(pwm4, _rc_throttle.radio_min + _min_throttle, _rc_throttle.radio_max);
 
-    // forcing motor 4 to be out completely
-    pwm4 = 0;
+    // forcing motor 3 and 4 to be out completely
+    // pwm3 = 0;
+    // pwm4 = 0;
 
     //::printf("pwm with user throttle:\t%i\t%i\t%i\t%i\n",pwm1,pwm2,pwm3,pwm4);
 

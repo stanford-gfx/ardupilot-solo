@@ -213,6 +213,12 @@ static void update_flight_mode()
 // exit_mode - high level call to organise cleanup as a flight mode is exited
 static void exit_mode(uint8_t old_control_mode, uint8_t new_control_mode)
 {
+
+    // if (old_control_mode == ACRO) {
+    //     motors.reset_motor_4();
+    //     hal.scheduler->delay(100);
+    // }
+
 #if AUTOTUNE_ENABLED == ENABLED
     if (old_control_mode == AUTOTUNE) {
         autotune_stop();

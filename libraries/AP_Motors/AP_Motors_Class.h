@@ -140,6 +140,8 @@ public:
     void                output();
     void                output_thrust_to_pwm();
 
+    void                reset_motor_4();
+
     // output_min - sends minimum values out to the motors
     virtual void        output_min() = 0;
 

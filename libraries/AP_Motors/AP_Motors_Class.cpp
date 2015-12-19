@@ -171,6 +171,12 @@ int16_t AP_Motors::get_hover_throttle_as_pwm() const
     return (_rc_throttle.radio_min + (float)(_rc_throttle.radio_max - _rc_throttle.radio_min) * _hover_out / 1000.0f);
 }
 
+void AP_Motors::reset_motor_4()
+{
+    hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_3]), _min_throttle);
+    hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_4]), _min_throttle);
+}
+
 // throttle_pass_through - passes provided pwm directly to all motors - dangerous but used for initialising ESCs
 //  pwm value is an actual pwm value that will be output, normally in the range of 1000 ~ 2000
 void AP_Motors::throttle_pass_through(int16_t pwm)

@@ -42,39 +42,85 @@
 
 #define AC_ATTITUDE_CONTROL_RATE_BF_FF_DEFAULT          1       // body-frame rate feedforward enabled by default
 
-// Reduced attitude controller coefficients
-#define AC_REDUCED_ATT_K11                              0.013448f
-#define AC_REDUCED_ATT_K12                              0.16466f
-#define AC_REDUCED_ATT_K13                             -8.0997f
-#define AC_REDUCED_ATT_K14                             -1.1245f
-#define AC_REDUCED_ATT_K15                              0.51051f
-#define AC_REDUCED_ATT_K16                             -0.27712f
-#define AC_REDUCED_ATT_K17                             -0.011706f
 
-#define AC_REDUCED_ATT_K21                             -0.0028388f
-#define AC_REDUCED_ATT_K22                             -0.15976
-#define AC_REDUCED_ATT_K23                              7.3918
-#define AC_REDUCED_ATT_K24                              1.2965
-#define AC_REDUCED_ATT_K25                             -0.27747
-#define AC_REDUCED_ATT_K26                              0.49103
-#define AC_REDUCED_ATT_K27                              0.02788
+// Reduced attitude controller coefficients (including thrust states)
+// #define AC_REDUCED_ATT_K11                              0.092325277296061f
+// #define AC_REDUCED_ATT_K12                              0.463194820340289f
+// #define AC_REDUCED_ATT_K13                             -2.560354509517178f
+// #define AC_REDUCED_ATT_K14                             -0.201385985740252f
+// #define AC_REDUCED_ATT_K15                              0.788159781011528f
+// #define AC_REDUCED_ATT_K16                             -0.551842239332164f
+// #define AC_REDUCED_ATT_K17                             -0.162478717118003f
 
-#define AC_REDUCED_ATT_K31                              0.19441f
-#define AC_REDUCED_ATT_K32                             -0.028429f
-#define AC_REDUCED_ATT_K33                             -7.5969f
-#define AC_REDUCED_ATT_K34                              4.1555f
-#define AC_REDUCED_ATT_K35                             -0.018433f
-#define AC_REDUCED_ATT_K36                              0.034346f
-#define AC_REDUCED_ATT_K37                              0.54327f
+// #define AC_REDUCED_ATT_K21                             -0.053899953129153f
+// #define AC_REDUCED_ATT_K22                             -0.456631146578874f
+// #define AC_REDUCED_ATT_K23                              2.335063340217959f
+// #define AC_REDUCED_ATT_K24                              0.261473563365239f
+// #define AC_REDUCED_ATT_K25                             -0.553098803529730f
+// #define AC_REDUCED_ATT_K26                              0.764505104258307f
+// #define AC_REDUCED_ATT_K27                              0.192048633529187f
+
+// #define AC_REDUCED_ATT_K31                              0.671596685242870f
+// #define AC_REDUCED_ATT_K32                             -0.219164563617343f
+// #define AC_REDUCED_ATT_K33                             -2.430948716748876f
+// #define AC_REDUCED_ATT_K34                              1.308227355157820f
+// #define AC_REDUCED_ATT_K35                             -0.186693925234970f
+// #define AC_REDUCED_ATT_K36                              0.215326147503024f
+// #define AC_REDUCED_ATT_K37                              0.913946909691891f
+
+// #define AC_REDUCED_ATT_K11                             -3.216916247050297f
+// #define AC_REDUCED_ATT_K12                              1.619879706085120f
+// #define AC_REDUCED_ATT_K13                             -12.724125074429153f
+// #define AC_REDUCED_ATT_K14                              6.378121067151952f
+// #define AC_REDUCED_ATT_K15                              2.944299684662542f
+// #define AC_REDUCED_ATT_K16                             -3.028930425964327f
+// #define AC_REDUCED_ATT_K17                              0.0f
+
+// #define AC_REDUCED_ATT_K21                              3.825131644717630f
+// #define AC_REDUCED_ATT_K22                             -1.500975017690998f
+// #define AC_REDUCED_ATT_K23                              11.065713764076316f
+// #define AC_REDUCED_ATT_K24                             -6.501768633445522f
+// #define AC_REDUCED_ATT_K25                             -3.038439626861289f
+// #define AC_REDUCED_ATT_K26                              3.159658710838838f
+// #define AC_REDUCED_ATT_K27                              0.0f
 
 // Reduced attitude controller set points
-#define AC_REDUCED_ATT_P                               -2.9401f
-#define AC_REDUCED_ATT_Q                                3.3383f
-#define AC_REDUCED_ATT_NX                               0.073719f
-#define AC_REDUCED_ATT_NY                              -0.083704f
-#define AC_REDUCED_ATT_F1                               5.5f
-#define AC_REDUCED_ATT_F2                               4.5f
-#define AC_REDCUED_ATT_F3                               5.0048f
+// #define AC_REDUCED_ATT_P                               -2.940075738870263f
+// #define AC_REDUCED_ATT_Q                                3.338291892914623f
+// #define AC_REDUCED_ATT_NX                               0.073718834225567f
+// #define AC_REDUCED_ATT_NY                              -0.083703621439661f
+// #define AC_REDUCED_ATT_P                               -0.377371277045804f
+// #define AC_REDUCED_ATT_Q                                0.145484385495310f
+// #define AC_REDUCED_ATT_NX                               0.008669474643629f
+// #define AC_REDUCED_ATT_NY                              -0.003342260706669f
+// #define AC_REDUCED_ATT_F1                               5.5f
+// #define AC_REDUCED_ATT_F2                               4.5f
+// #define AC_REDUCED_ATT_F3                               5.004827863743638f
+// #define AC_REDUCED_ATT_F1                               7.455921843666409f
+// #define AC_REDUCED_ATT_F2                               7.455921843666409f
+// #define AC_REDUCED_ATT_F3                               0.0f
+// #define AC_REDCUED_ATT_F4                               0.0f
+
+// two prop control 
+#define AC_REDUCED_ATT_K11                             -0.037705553848059f
+#define AC_REDUCED_ATT_K12                              9.880781829802718f
+#define AC_REDUCED_ATT_K13                             -3.415385194158708f
+#define AC_REDUCED_ATT_K14                              3.201438973408626f
+
+#define AC_REDUCED_ATT_K21                              3.504581168000971f
+#define AC_REDUCED_ATT_K22                             -4.423958766090803f
+#define AC_REDUCED_ATT_K23                              1.956849092033183f
+#define AC_REDUCED_ATT_K24                              1.018378323432946f
+
+#define AC_REDUCED_ATT_P                                0.732014016133081f
+#define AC_REDUCED_ATT_Q                               -0.099068846046446f
+#define AC_REDUCED_ATT_NX                               0.328869898339663f
+#define AC_REDUCED_ATT_NY                              -0.044508384552570f
+
+#define AC_REDUCED_ATT_F1                               0.0f
+#define AC_REDUCED_ATT_F2                               0.0f
+#define AC_REDUCED_ATT_F3                               0.0f
+#define AC_REDCUED_ATT_F4                               0.0f
 
 
 class AC_AttitudeControl {
@@ -98,9 +144,10 @@ public:
         _angle_boost(0),
         _acro_angle_switch(0),
         _reduced_att_rho(0),
-        _last_f1(0),
-        _last_f2(0),
-        _last_f3(0)
+        _last_f1(AC_REDUCED_ATT_F1),
+        _last_f2(AC_REDUCED_ATT_F2),
+        _last_f3(AC_REDUCED_ATT_F3),
+        _last_f4(AC_REDCUED_ATT_F4)
         {
 			AP_Param::setup_object_defaults(this, var_info);
 
@@ -236,6 +283,9 @@ public:
 
      void set_n_ned(const Vector3f& n_ned) { _n_ned = n_ned; }
 
+     // void poll_reduced_att_ctrl(float *poll_vect) { poll_vect[0] = _pqr.x; poll_vect[1] = _pqr.y; poll_vect[2] = _n_bf.x; poll_vect[3] = _n_bf.y; poll_vect[4] = _last_f1; poll_vect[5] = _last_f2; poll_vect[6] = _last_f3; }
+     void poll_reduced_att_ctrl(float *poll_vect) { poll_vect[0] = _pqr_setpoint.x; poll_vect[1] = _pqr_setpoint.y; poll_vect[2] = _pqr_setpoint.z; poll_vect[3] = _last_f1; poll_vect[4] = _last_f2; poll_vect[5] = _last_f3; poll_vect[6] = _last_f4; }
+
     //
     // helper functions
     //
@@ -251,6 +301,8 @@ public:
 
     // user settable parameters
     static const struct AP_Param::GroupInfo var_info[];
+
+    void set_reduced_att_pqr(const Vector3f& pqr_setpoint) { _pqr_setpoint = pqr_setpoint/AC_ATTITUDE_CONTROL_DEGX100; }
 
 protected:
 
@@ -332,9 +384,12 @@ protected:
     float               _reduced_att_rho;       // f2/f1 used by the reduced attitude 
     Vector3f            _n_ned;                 // n vector for reduced attitude control in NED frame
     Vector3f            _n_bf;                  // n vector for reduced attitude control in body frame
+    Vector3f            _pqr;
     float               _last_f1;
     float               _last_f2;
     float               _last_f3;
+    float               _last_f4;
+    Vector3f            _pqr_setpoint;
 };
 
 #define AC_ATTITUDE_CONTROL_LOG_FORMAT(msg) { msg, sizeof(AC_AttitudeControl::log_Attitude),	\

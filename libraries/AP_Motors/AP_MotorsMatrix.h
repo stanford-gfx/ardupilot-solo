@@ -14,8 +14,8 @@
 #define AP_MOTORS_MATRIX_YAW_FACTOR_CW   -1
 #define AP_MOTORS_MATRIX_YAW_FACTOR_CCW   1
 
-#define AP_MOTORS_PWM_TO_THRUST_SLOPE     0.0119f
-#define AP_MOTORS_PWM_TO_THRUST_INTER    -12.774f
+#define AP_MOTORS_PWM_TO_THRUST_SLOPE     0.0116f
+#define AP_MOTORS_PWM_TO_THRUST_INTER    -12.38f
 
 /// @class      AP_MotorsMatrix
 class AP_MotorsMatrix : public AP_Motors {

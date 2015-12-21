@@ -902,7 +902,7 @@ static void fast_loop()
 
     if (control_mode == ACRO) {
       // run the controller that can handle prop failure
-      attitude_control.reduced_attitude_controller_run();
+      attitude_control.LQR_rate_controller_run();
     } else {
       // run low level rate controllers that only require IMU data
       attitude_control.rate_controller_run();

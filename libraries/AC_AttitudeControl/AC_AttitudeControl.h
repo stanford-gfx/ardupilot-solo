@@ -210,7 +210,7 @@ public:
     //
     virtual void rate_controller_run();
 
-    virtual void reduced_attitude_controller_run();
+    virtual void LQR_rate_controller_run();
 
     //
     // earth-frame <-> body-frame conversion functions

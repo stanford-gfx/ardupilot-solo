@@ -460,7 +460,7 @@ void AC_AttitudeControl::rate_controller_run()
     _motors.set_yaw(rate_bf_to_motor_yaw(_rate_bf_target.z));
 }
 
-void AC_AttitudeControl::reduced_attitude_controller_run()
+void AC_AttitudeControl::LQR_rate_controller_run()
 {
     // NED to body frame
     //Matrix3f m = _ahrs.get_dcm_matrix();

@@ -901,7 +901,7 @@ static void fast_loop()
     read_AHRS();
 
     if (control_mode == ACRO) {
-      // run the controller that can handle prop failure
+      // run the LQR rate controller instead of the regular rate controller
       attitude_control.LQR_rate_controller_run();
     } else {
       // run low level rate controllers that only require IMU data

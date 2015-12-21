@@ -42,86 +42,62 @@
 
 #define AC_ATTITUDE_CONTROL_RATE_BF_FF_DEFAULT          1       // body-frame rate feedforward enabled by default
 
+// LQR rate control
+// super low gain
+#define LQR_K11        -0.155449579083279f
+#define LQR_K12         0.164198390608568f
+#define LQR_K13         0.006579210406319f
+#define LQR_K21         0.157606178219422f
+#define LQR_K22        -0.149322636543974f
+#define LQR_K23         0.006579210406316f
+#define LQR_K31         0.157561911399739f
+#define LQR_K32         0.164139334691716f
+#define LQR_K33        -0.006579210406317f
+#define LQR_K41        -0.155405312263595f
+#define LQR_K42        -0.149263580627123f
+#define LQR_K43        -0.006579210406317f
 
-// Reduced attitude controller coefficients (including thrust states)
-// #define AC_REDUCED_ATT_K11                              0.092325277296061f
-// #define AC_REDUCED_ATT_K12                              0.463194820340289f
-// #define AC_REDUCED_ATT_K13                             -2.560354509517178f
-// #define AC_REDUCED_ATT_K14                             -0.201385985740252f
-// #define AC_REDUCED_ATT_K15                              0.788159781011528f
-// #define AC_REDUCED_ATT_K16                             -0.551842239332164f
-// #define AC_REDUCED_ATT_K17                             -0.162478717118003f
+// low gain
+// #define LQR_K11        -0.480966518730016f
+// #define LQR_K12         0.510780687679024f
+// #define LQR_K13         0.064773941627088f
+// #define LQR_K21         0.487638952019218f
+// #define LQR_K22        -0.464506038882794f
+// #define LQR_K23         0.064773941627088f
+// #define LQR_K31         0.487499046674955f
+// #define LQR_K32         0.510594041372901f
+// #define LQR_K33        -0.064773941627087f
+// #define LQR_K41        -0.480826613385753f
+// #define LQR_K42        -0.464319392576670f
+// #define LQR_K43        -0.064773941627088f
 
-// #define AC_REDUCED_ATT_K21                             -0.053899953129153f
-// #define AC_REDUCED_ATT_K22                             -0.456631146578874f
-// #define AC_REDUCED_ATT_K23                              2.335063340217959f
-// #define AC_REDUCED_ATT_K24                              0.261473563365239f
-// #define AC_REDUCED_ATT_K25                             -0.553098803529730f
-// #define AC_REDUCED_ATT_K26                              0.764505104258307f
-// #define AC_REDUCED_ATT_K27                              0.192048633529187f
+// medium gain
+// #define LQR_K11        -1.422404661298003f
+// #define LQR_K12         1.535223232392618f
+// #define LQR_K13         0.570671235077991f
+// #define LQR_K21         1.442136190289295f
+// #define LQR_K22        -1.396139625255876f
+// #define LQR_K23         0.570671235077978f
+// #define LQR_K31         1.441696018841702f
+// #define LQR_K32         1.534636004112043f
+// #define LQR_K33        -0.570671235077990f
+// #define LQR_K41        -1.421964489850408f
+// #define LQR_K42        -1.395552396975302f
+// #define LQR_K43        -0.570671235077978f
 
-// #define AC_REDUCED_ATT_K31                              0.671596685242870f
-// #define AC_REDUCED_ATT_K32                             -0.219164563617343f
-// #define AC_REDUCED_ATT_K33                             -2.430948716748876f
-// #define AC_REDUCED_ATT_K34                              1.308227355157820f
-// #define AC_REDUCED_ATT_K35                             -0.186693925234970f
-// #define AC_REDUCED_ATT_K36                              0.215326147503024f
-// #define AC_REDUCED_ATT_K37                              0.913946909691891f
-
-// #define AC_REDUCED_ATT_K11                             -3.216916247050297f
-// #define AC_REDUCED_ATT_K12                              1.619879706085120f
-// #define AC_REDUCED_ATT_K13                             -12.724125074429153f
-// #define AC_REDUCED_ATT_K14                              6.378121067151952f
-// #define AC_REDUCED_ATT_K15                              2.944299684662542f
-// #define AC_REDUCED_ATT_K16                             -3.028930425964327f
-// #define AC_REDUCED_ATT_K17                              0.0f
-
-// #define AC_REDUCED_ATT_K21                              3.825131644717630f
-// #define AC_REDUCED_ATT_K22                             -1.500975017690998f
-// #define AC_REDUCED_ATT_K23                              11.065713764076316f
-// #define AC_REDUCED_ATT_K24                             -6.501768633445522f
-// #define AC_REDUCED_ATT_K25                             -3.038439626861289f
-// #define AC_REDUCED_ATT_K26                              3.159658710838838f
-// #define AC_REDUCED_ATT_K27                              0.0f
-
-// Reduced attitude controller set points
-// #define AC_REDUCED_ATT_P                               -2.940075738870263f
-// #define AC_REDUCED_ATT_Q                                3.338291892914623f
-// #define AC_REDUCED_ATT_NX                               0.073718834225567f
-// #define AC_REDUCED_ATT_NY                              -0.083703621439661f
-// #define AC_REDUCED_ATT_P                               -0.377371277045804f
-// #define AC_REDUCED_ATT_Q                                0.145484385495310f
-// #define AC_REDUCED_ATT_NX                               0.008669474643629f
-// #define AC_REDUCED_ATT_NY                              -0.003342260706669f
-// #define AC_REDUCED_ATT_F1                               5.5f
-// #define AC_REDUCED_ATT_F2                               4.5f
-// #define AC_REDUCED_ATT_F3                               5.004827863743638f
-// #define AC_REDUCED_ATT_F1                               7.455921843666409f
-// #define AC_REDUCED_ATT_F2                               7.455921843666409f
-// #define AC_REDUCED_ATT_F3                               0.0f
-// #define AC_REDCUED_ATT_F4                               0.0f
-
-// two prop control 
-#define AC_REDUCED_ATT_K11                             -0.037705553848059f
-#define AC_REDUCED_ATT_K12                              9.880781829802718f
-#define AC_REDUCED_ATT_K13                             -3.415385194158708f
-#define AC_REDUCED_ATT_K14                              3.201438973408626f
-
-#define AC_REDUCED_ATT_K21                              3.504581168000971f
-#define AC_REDUCED_ATT_K22                             -4.423958766090803f
-#define AC_REDUCED_ATT_K23                              1.956849092033183f
-#define AC_REDUCED_ATT_K24                              1.018378323432946f
-
-#define AC_REDUCED_ATT_P                                0.732014016133081f
-#define AC_REDUCED_ATT_Q                               -0.099068846046446f
-#define AC_REDUCED_ATT_NX                               0.328869898339663f
-#define AC_REDUCED_ATT_NY                              -0.044508384552570f
-
-#define AC_REDUCED_ATT_F1                               0.0f
-#define AC_REDUCED_ATT_F2                               0.0f
-#define AC_REDUCED_ATT_F3                               0.0f
-#define AC_REDCUED_ATT_F4                               0.0f
-
+// high gain
+// #define LQR_K11        -3.703660738276276f
+// #define LQR_K12         4.177229865121025f
+// #define LQR_K13         3.396827942398406f
+// #define LQR_K21         3.755027193375432f
+// #define LQR_K22        -3.798803339806461f
+// #define LQR_K23         3.396827942398400f
+// #define LQR_K31         3.753688344785829f
+// #define LQR_K32         4.175443720745878f
+// #define LQR_K33        -3.396827942398400f
+// #define LQR_K41        -3.702321889686674f
+// #define LQR_K42        -3.797017195431312f
+// #define LQR_K43        -3.396827942398404f
 
 class AC_AttitudeControl {
 public:
@@ -142,12 +118,7 @@ public:
         _pid_rate_yaw(pid_rate_yaw),
         _dt(AC_ATTITUDE_100HZ_DT),
         _angle_boost(0),
-        _acro_angle_switch(0),
-        _reduced_att_rho(0),
-        _last_f1(AC_REDUCED_ATT_F1),
-        _last_f2(AC_REDUCED_ATT_F2),
-        _last_f3(AC_REDUCED_ATT_F3),
-        _last_f4(AC_REDCUED_ATT_F4)
+        _acro_angle_switch(0)
         {
 			AP_Param::setup_object_defaults(this, var_info);
 

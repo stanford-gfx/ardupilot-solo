@@ -468,49 +468,22 @@ void AC_AttitudeControl::LQR_rate_controller_run()
     //_n_bf = m * _n_ned;
     _pqr = _ahrs.get_gyro_for_control();
 
-    // float s1_tilda = _pqr.x - AC_REDUCED_ATT_P; 
-    // float s2_tilda = _pqr.y - AC_REDUCED_ATT_Q;
-    // float s3_tilda = _n_bf.x - AC_REDUCED_ATT_NX;
-    // float s4_tilda = _n_bf.y - AC_REDUCED_ATT_NY;
-
-    // float s5_tilda = 0.0f; //_last_f1 - AC_REDUCED_ATT_F1;
-    // float s6_tilda = 0.0f; //_last_f2 - AC_REDUCED_ATT_F2;
-    // float s7_tilda = 0.0f; //_last_f3 - AC_REDUCED_ATT_F3;
 
     float s1_tilda = _pqr.x - _pqr_setpoint.x;
     float s2_tilda = _pqr.y - _pqr_setpoint.y;
     float s3_tilda = _pqr.z - _pqr_setpoint.z;
 
-    //float f1 = AC_REDUCED_ATT_F1 - (AC_REDUCED_ATT_K11 * s1_tilda + AC_REDUCED_ATT_K12 * s2_tilda + AC_REDUCED_ATT_K13 * s3_tilda + AC_REDUCED_ATT_K14 * s4_tilda + AC_REDUCED_ATT_K15 * s5_tilda + AC_REDUCED_ATT_K16 * s6_tilda + AC_REDUCED_ATT_K17 * s7_tilda);
-    //float f2 = AC_REDUCED_ATT_F2 - (AC_REDUCED_ATT_K21 * s1_tilda + AC_REDUCED_ATT_K22 * s2_tilda + AC_REDUCED_ATT_K23 * s3_tilda + AC_REDUCED_ATT_K24 * s4_tilda + AC_REDUCED_ATT_K25 * s5_tilda + AC_REDUCED_ATT_K26 * s6_tilda + AC_REDUCED_ATT_K27 * s7_tilda);
-    //float f3 = AC_REDUCED_ATT_F3 - (AC_REDUCED_ATT_K31 * s1_tilda + AC_REDUCED_ATT_K32 * s2_tilda + AC_REDUCED_ATT_K33 * s3_tilda + AC_REDUCED_ATT_K34 * s4_tilda + AC_REDUCED_ATT_K35 * s5_tilda + AC_REDUCED_ATT_K36 * s6_tilda + AC_REDUCED_ATT_K37 * s7_tilda);
-    //float f3 = 0.0f;
-    //float f4 = 0.0f;
-
-    // float f1 = (AC_REDUCED_ATT_K11 * s1_tilda + AC_REDUCED_ATT_K12 * s2_tilda + AC_REDUCED_ATT_K13 * s3_tilda + AC_REDUCED_ATT_K14 * s4_tilda);
-    // float f2 = (AC_REDUCED_ATT_K21 * s1_tilda + AC_REDUCED_ATT_K22 * s2_tilda + AC_REDUCED_ATT_K23 * s3_tilda + AC_REDUCED_ATT_K24 * s4_tilda);
-    // float f3 = 0.0f;
-    // float f4 = 0.0f;
-
-    float f1 = -1.0f * (-1.368775516747998f*s1_tilda +  1.589926465442792f*s2_tilda +  2.660261478722036f*s3_tilda);
-    float f2 = -1.0f * ( 1.386241609887000f*s1_tilda + -1.447749920727015f*s2_tilda +  2.660261478686883f*s3_tilda);
-    float f3 = -1.0f * ( 1.358018849321566f*s1_tilda +  1.553418352003527f*s2_tilda + -2.660261478701751f*s3_tilda);
-    float f4 = -1.0f * (-1.340552756181595f*s1_tilda + -1.411241807289477f*s2_tilda + -2.660261478705536f*s3_tilda);
+    float f1 = -1.0f * (LQR_K11*s1_tilda + LQR_K12*s2_tilda + LQR_K13*s3_tilda);
+    float f2 = -1.0f * (LQR_K21*s1_tilda + LQR_K22*s2_tilda + LQR_K23*s3_tilda);
+    float f3 = -1.0f * (LQR_K31*s1_tilda + LQR_K32*s2_tilda + LQR_K33*s3_tilda);
+    float f4 = -1.0f * (LQR_K41*s1_tilda + LQR_K42*s2_tilda + LQR_K43*s3_tilda);
 
     f1 = constrain_float(f1,0.0f,15.0f);
     f2 = constrain_float(f2,0.0f,15.0f);
     f3 = constrain_float(f3,0.0f,15.0f);
     f4 = constrain_float(f4,0.0f,15.0f);    
 
-    //::printf("nve:\t%4.4f\t%4.4f\t%4.4f\npqr:\t%4.4f\t%4.4f\t%4.4f\nfou:\t%4.4f\t%4.4f\t%4.4f\n",_n_bf.x,_n_bf.y,_n_bf.z,_pqr.x,_pqr.y,_pqr.z,f1,f2,f3);
-    //::printf("nve:\t%4.4f\t%4.4f\npqr:\t%4.4f\t%4.4f\nfou:\t%4.4f\t%4.4f\t%4.4f\n",_n_bf.x,_n_bf.y,_pqr.x,_pqr.y,f1,f2,f3);
-    //::printf("%4.4f %4.4f %4.4f %4.4f %4.4f %4.4f %4.4f\n",_n_bf.x,_n_bf.y,_pqr.x,_pqr.y,f1,f2,f3);
-
-    // keeps the last output for next state
-    _last_f1 = f1;
-    _last_f2 = f2;
-    _last_f3 = f3;
-    _last_f4 = f4;
+    ::printf("measured p/q/r: \t%4.4f\t%4.4f\t%4.4f\nsetpoint p/q/r: \t%4.4f\t%4.4f\t%4.4f\nthrust commands f1/f2/f3/f4: \t%4.4f\t%4.4f\t%4.4f\t%4.4f\n", _pqr.x, _pqr.y, _pqr.z, _pqr_setpoint.x, _pqr_setpoint.y, _pqr_setpoint.z, f1, f2, f3, f4);
 
     // sets the thrusts for the motor mixer
     _motors.set_thrusts(f1,f2,f3,f4);

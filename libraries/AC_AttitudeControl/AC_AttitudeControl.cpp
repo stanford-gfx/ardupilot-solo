@@ -473,20 +473,20 @@ void AC_AttitudeControl::LQR_rate_controller_run()
     float s2_tilda = _pqr.y - _pqr_setpoint.y;
     float s3_tilda = _pqr.z - _pqr_setpoint.z;
 
-    float f1 = -1.0f * (LQR_K11*s1_tilda + LQR_K12*s2_tilda + LQR_K13*s3_tilda);
-    float f2 = -1.0f * (LQR_K21*s1_tilda + LQR_K22*s2_tilda + LQR_K23*s3_tilda);
-    float f3 = -1.0f * (LQR_K31*s1_tilda + LQR_K32*s2_tilda + LQR_K33*s3_tilda);
-    float f4 = -1.0f * (LQR_K41*s1_tilda + LQR_K42*s2_tilda + LQR_K43*s3_tilda);
+    float f1_delta = -1.0f * (LQR_K11*s1_tilda + LQR_K12*s2_tilda + LQR_K13*s3_tilda);
+    float f2_delta = -1.0f * (LQR_K21*s1_tilda + LQR_K22*s2_tilda + LQR_K23*s3_tilda);
+    float f3_delta = -1.0f * (LQR_K31*s1_tilda + LQR_K32*s2_tilda + LQR_K33*s3_tilda);
+    float f4_delta = -1.0f * (LQR_K41*s1_tilda + LQR_K42*s2_tilda + LQR_K43*s3_tilda);
 
-    f1 = constrain_float(f1,0.0f,15.0f);
-    f2 = constrain_float(f2,0.0f,15.0f);
-    f3 = constrain_float(f3,0.0f,15.0f);
-    f4 = constrain_float(f4,0.0f,15.0f);    
+    // f1 = constrain_float(f1,0.0f,15.0f);
+    // f2 = constrain_float(f2,0.0f,15.0f);
+    // f3 = constrain_float(f3,0.0f,15.0f);
+    // f4 = constrain_float(f4,0.0f,15.0f);
 
-    ::printf("measured p/q/r: \t%4.4f\t%4.4f\t%4.4f\nsetpoint p/q/r: \t%4.4f\t%4.4f\t%4.4f\nthrust commands f1/f2/f3/f4: \t%4.4f\t%4.4f\t%4.4f\t%4.4f\n", _pqr.x, _pqr.y, _pqr.z, _pqr_setpoint.x, _pqr_setpoint.y, _pqr_setpoint.z, f1, f2, f3, f4);
+    //::printf("p/q/r error: \t%4.4f\t%4.4f\t%4.4f\t\t\tforce commands: \t%4.4f\t%4.4f\t%4.4f\t%4.4f\n", s1_tilda, s2_tilda, s3_tilda, f1, f2, f3, f4);
 
     // sets the thrusts for the motor mixer
-    _motors.set_thrusts(f1,f2,f3,f4);
+    _motors.set_thrusts(f1_delta,f2_delta,f3_delta,f4_delta);
 }
 
 //

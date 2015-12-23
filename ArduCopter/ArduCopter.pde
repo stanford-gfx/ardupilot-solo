@@ -330,7 +330,7 @@ static GCS_MAVLINK gcs[MAVLINK_COMM_NUM_BUFFERS];
  *                       4	Rudder (if we have ailerons)
  *                       5	Mode - 3 position switch
  *                       6  User assignable
- *                       7	trainer switch - sets throttle nominal (toggle switch), sets accels to Level (hold > 1 second)
+ *                       7	Gimbal rate wheel, to be used for on-the-fly LQR gain tuning
  *                       8	TBD
  *               Each Aux channel can be configured to have any of the available auxiliary functions assigned to it.
  *               See libraries/RC_Channel/RC_Channel_aux.h for more information

@@ -25,6 +25,7 @@ static void init_rc_in()
     g.rc_2.set_angle(ROLL_PITCH_INPUT_MAX);
     g.rc_3.set_range(g.throttle_min, THR_MAX);
     g.rc_4.set_angle(4500);
+    g.rc_7.set_range(0,1000);
 
     g.rc_1.set_type(RC_CHANNEL_TYPE_ANGLE_RAW);
     g.rc_2.set_type(RC_CHANNEL_TYPE_ANGLE_RAW);
@@ -33,7 +34,6 @@ static void init_rc_in()
     //set auxiliary servo ranges
     g.rc_5.set_range(0,1000);
     g.rc_6.set_range(0,1000);
-    g.rc_7.set_range(0,1000);
     g.rc_8.set_range(0,1000);
 
     // set default dead zones
@@ -100,7 +100,7 @@ static void read_radio()
         g.rc_4.set_pwm(periods[rcmap.yaw()-1]);
         g.rc_5.set_pwm(periods[4]);
         g.rc_6.set_pwm(periods[5]);
-        g.rc_7.set_pwm(periods[6]);
+        g.rc_7.set_pwm(periods[rcmap.gainparam()-1]);
         g.rc_8.set_pwm(periods[7]);
 
         // read channels 9 ~ 14

@@ -411,7 +411,7 @@ void AP_MotorsMatrix::output_armed_stabilizing_thrust_to_pwm()
     // pwm3 = 0;
     // pwm4 = 0;
 
-    ::printf("pwm with user throttle:\t%i\t%i\t%i\t%i\n",pwm1,pwm2,pwm3,pwm4);
+    //::printf("pwm with user throttle:\t%i\t%i\t%i\t%i\n",pwm1,pwm2,pwm3,pwm4);
 
     // send output to each motor
     hal.rcout->write(pgm_read_byte(&_motor_to_channel_map[AP_MOTORS_MOT_1]), pwm1);

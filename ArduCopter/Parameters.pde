@@ -408,7 +408,7 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Description: Select which function if performed when CH7 is above 1800 pwm
     // @Values: 0:Do Nothing, 2:Flip, 3:Simple Mode, 4:RTL, 5:Save Trim, 7:Save WP, 8:Multi Mode, 9:Camera Trigger, 10:RangeFinder, 11:Fence, 12:ResetToArmedYaw, 13:Super Simple Mode, 14:Acro Trainer, 16:Auto, 17:AutoTune, 18:Land, 19:EPM, 21:Parachute Enable, 22:Parachute Release, 23:Parachute 3pos, 24:Auto Mission Reset, 25:AttCon Feed Forward, 26:AttCon Accel Limits, 27:Retract Mount, 28:Relay On/Off, 29:Landing Gear, 30:Lost Copter Sound
     // @User: Standard
-    GSCALAR(ch7_option, "CH7_OPT",                  AUXSW_DO_NOTHING),
+    // GSCALAR(ch7_option, "CH7_OPT",                  AUXSW_DO_NOTHING),
 
     // @Param: CH8_OPT
     // @DisplayName: Channel 8 option
@@ -562,8 +562,8 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Path: ../libraries/RC_Channel/RC_Channel.cpp,../libraries/RC_Channel/RC_Channel_aux.cpp
     GGROUP(rc_6,    "RC6_", RC_Channel_aux),
     // @Group: RC7_
-    // @Path: ../libraries/RC_Channel/RC_Channel.cpp,../libraries/RC_Channel/RC_Channel_aux.cpp
-    GGROUP(rc_7,    "RC7_", RC_Channel_aux),
+    // @Path: ../libraries/RC_Channel/RC_Channel.cpp
+    GGROUP(rc_7,    "RC7_", RC_Channel),
     // @Group: RC8_
     // @Path: ../libraries/RC_Channel/RC_Channel.cpp,../libraries/RC_Channel/RC_Channel_aux.cpp
     GGROUP(rc_8,    "RC8_", RC_Channel_aux),

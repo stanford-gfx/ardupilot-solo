@@ -36,6 +36,14 @@ const AP_Param::GroupInfo RCMapper::var_info[] PROGMEM = {
     // @User: Advanced
     AP_GROUPINFO("YAW",         3, RCMapper, _ch_yaw, 4),
 
+    // @Param: GAIN
+    // @DisplayName: Gain tuning channel
+    // @Description: Gain parameter channel number. This maps from the gimbal tilt rate wheel
+    // @Range: 1 8
+    // @Increment: 1
+    // @User: Advanced
+    AP_GROUPINFO("GAINPARAM",         6, RCMapper, _ch_gainparam, 7),
+
     AP_GROUPEND
 };
 

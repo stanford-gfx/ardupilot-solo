@@ -37,7 +37,8 @@ static void acro_run()
     get_pilot_desired_angle_rates(g.rc_1.control_in, g.rc_2.control_in, g.rc_4.control_in, target_roll, target_pitch, target_yaw);
 
     // convert the input to the desired body frame rate
-    attitude_control.set_reduced_att_pqr(Vector3f(target_roll,target_pitch,target_yaw));
+    attitude_control.set_rate_setpoint(Vector3f(target_roll,target_pitch,target_yaw));
+    attitude_control.set_gain_interp(g.rc_7.control_in);
 
     // output pilot's throttle without angle boost
     attitude_control.set_throttle_out(pilot_throttle_scaled,false,g.throttle_filt);

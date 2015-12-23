@@ -3,8 +3,6 @@
 #include "AC_AttitudeControl.h"
 #include <AP_HAL.h>
 
-#include <stdio.h>
-
 // table of user settable parameters
 const AP_Param::GroupInfo AC_AttitudeControl::var_info[] PROGMEM = {
 
@@ -468,21 +466,34 @@ void AC_AttitudeControl::LQR_rate_controller_run()
     //_n_bf = m * _n_ned;
     _pqr = _ahrs.get_gyro_for_control();
 
-
     float s1_tilda = _pqr.x - _pqr_setpoint.x;
     float s2_tilda = _pqr.y - _pqr_setpoint.y;
     float s3_tilda = _pqr.z - _pqr_setpoint.z;
 
-    float f1_delta = -1.0f * (LQR_K11*s1_tilda + LQR_K12*s2_tilda + LQR_K13*s3_tilda);
-    float f2_delta = -1.0f * (LQR_K21*s1_tilda + LQR_K22*s2_tilda + LQR_K23*s3_tilda);
-    float f3_delta = -1.0f * (LQR_K31*s1_tilda + LQR_K32*s2_tilda + LQR_K33*s3_tilda);
-    float f4_delta = -1.0f * (LQR_K41*s1_tilda + LQR_K42*s2_tilda + LQR_K43*s3_tilda);
+    float K11 = LQR_superlow_K11 * (1.0f - _gain_interp) + LQR_high_K11 * _gain_interp;
+    float K12 = LQR_superlow_K12 * (1.0f - _gain_interp) + LQR_high_K12 * _gain_interp;
+    float K13 = LQR_superlow_K13 * (1.0f - _gain_interp) + LQR_high_K13 * _gain_interp;
+    float K21 = LQR_superlow_K21 * (1.0f - _gain_interp) + LQR_high_K21 * _gain_interp;
+    float K22 = LQR_superlow_K22 * (1.0f - _gain_interp) + LQR_high_K22 * _gain_interp;
+    float K23 = LQR_superlow_K23 * (1.0f - _gain_interp) + LQR_high_K23 * _gain_interp;
+    float K31 = LQR_superlow_K31 * (1.0f - _gain_interp) + LQR_high_K31 * _gain_interp;
+    float K32 = LQR_superlow_K32 * (1.0f - _gain_interp) + LQR_high_K32 * _gain_interp;
+    float K33 = LQR_superlow_K33 * (1.0f - _gain_interp) + LQR_high_K33 * _gain_interp;
+    float K41 = LQR_superlow_K41 * (1.0f - _gain_interp) + LQR_high_K41 * _gain_interp;
+    float K42 = LQR_superlow_K42 * (1.0f - _gain_interp) + LQR_high_K42 * _gain_interp;
+    float K43 = LQR_superlow_K43 * (1.0f - _gain_interp) + LQR_high_K43 * _gain_interp;
+
+    float f1_delta = -1.0f * (K11*s1_tilda + K12*s2_tilda + K13*s3_tilda);
+    float f2_delta = -1.0f * (K21*s1_tilda + K22*s2_tilda + K23*s3_tilda);
+    float f3_delta = -1.0f * (K31*s1_tilda + K32*s2_tilda + K33*s3_tilda);
+    float f4_delta = -1.0f * (K41*s1_tilda + K42*s2_tilda + K43*s3_tilda);
 
     // f1 = constrain_float(f1,0.0f,15.0f);
     // f2 = constrain_float(f2,0.0f,15.0f);
     // f3 = constrain_float(f3,0.0f,15.0f);
     // f4 = constrain_float(f4,0.0f,15.0f);
 
+    //::printf("gain interpolation parameter: %.1f\n", _gain_interp);
     //::printf("p/q/r error: \t%4.4f\t%4.4f\t%4.4f\t\t\tforce commands: \t%4.4f\t%4.4f\t%4.4f\t%4.4f\n", s1_tilda, s2_tilda, s3_tilda, f1, f2, f3, f4);
 
     // sets the thrusts for the motor mixer

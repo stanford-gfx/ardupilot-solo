@@ -415,7 +415,7 @@ public:
     AP_Int16        radio_tuning_high;
     AP_Int16        radio_tuning_low;
     AP_Int8         frame_orientation;
-    AP_Int8         ch7_option;
+    //AP_Int8         ch7_option;
     AP_Int8         ch8_option;
     AP_Int8         ch9_option;
     AP_Int8         ch10_option;
@@ -450,7 +450,7 @@ public:
     RC_Channel              rc_4;
     RC_Channel_aux          rc_5;
     RC_Channel_aux          rc_6;
-    RC_Channel_aux          rc_7;
+    RC_Channel              rc_7;
     RC_Channel_aux          rc_8;
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4 || CONFIG_HAL_BOARD == HAL_BOARD_VRBRAIN
     RC_Channel_aux          rc_9;

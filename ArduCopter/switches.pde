@@ -61,7 +61,9 @@ static void read_control_switch()
 // check_if_auxsw_mode_used - Check to see if any of the Aux Switches are set to a given mode.
 static bool check_if_auxsw_mode_used(uint8_t auxsw_mode_check)
 {
-    bool ret = g.ch7_option == auxsw_mode_check || g.ch8_option == auxsw_mode_check || g.ch9_option == auxsw_mode_check 
+    // bool ret = g.ch7_option == auxsw_mode_check || g.ch8_option == auxsw_mode_check || g.ch9_option == auxsw_mode_check 
+    //            || g.ch10_option == auxsw_mode_check || g.ch11_option == auxsw_mode_check || g.ch12_option == auxsw_mode_check;
+    bool ret = g.ch8_option == auxsw_mode_check || g.ch9_option == auxsw_mode_check 
                 || g.ch10_option == auxsw_mode_check || g.ch11_option == auxsw_mode_check || g.ch12_option == auxsw_mode_check;
 
     return ret;
@@ -70,11 +72,11 @@ static bool check_if_auxsw_mode_used(uint8_t auxsw_mode_check)
 // check_duplicate_auxsw - Check to see if any Aux Switch Functions are duplicated
 static bool check_duplicate_auxsw(void)
 {
-    bool ret = ((g.ch7_option != AUXSW_DO_NOTHING) && (g.ch7_option == g.ch8_option ||
-                g.ch7_option == g.ch9_option || g.ch7_option == g.ch10_option ||
-                g.ch7_option == g.ch11_option || g.ch7_option == g.ch12_option));
+    //bool ret = ((g.ch7_option != AUXSW_DO_NOTHING) && (g.ch7_option == g.ch8_option ||
+    //            g.ch7_option == g.ch9_option || g.ch7_option == g.ch10_option ||
+    //            g.ch7_option == g.ch11_option || g.ch7_option == g.ch12_option));
 
-    ret = ret || ((g.ch8_option != AUXSW_DO_NOTHING) && (g.ch8_option == g.ch9_option ||
+    bool ret = ((g.ch8_option != AUXSW_DO_NOTHING) && (g.ch8_option == g.ch9_option ||
                     g.ch8_option == g.ch10_option || g.ch8_option == g.ch11_option ||
                     g.ch8_option == g.ch12_option));
 
@@ -113,15 +115,16 @@ static void read_aux_switches()
         return;
     }
 
+
     // check if ch7 switch has changed position
-    switch_position = read_3pos_switch(g.rc_7.radio_in);
-    if (ap.CH7_flag != switch_position) {
+    //switch_position = read_3pos_switch(g.rc_7.radio_in);
+    //if (ap.CH7_flag != switch_position) {
         // set the CH7 flag
-        ap.CH7_flag = switch_position;
+    //    ap.CH7_flag = switch_position;
 
         // invoke the appropriate function
-        do_aux_switch_function(g.ch7_option, ap.CH7_flag);
-    }
+    //   do_aux_switch_function(g.ch7_option, ap.CH7_flag);
+    //}
 
     // check if Ch8 switch has changed position
     switch_position = read_3pos_switch(g.rc_8.radio_in);
@@ -182,7 +185,7 @@ static void read_aux_switches()
 static void init_aux_switches()
 {
     // set the CH7 ~ CH12 flags
-    ap.CH7_flag = read_3pos_switch(g.rc_7.radio_in);
+    //ap.CH7_flag = read_3pos_switch(g.rc_7.radio_in);
     ap.CH8_flag = read_3pos_switch(g.rc_8.radio_in);
     ap.CH10_flag = read_3pos_switch(g.rc_10.radio_in);
     ap.CH11_flag = read_3pos_switch(g.rc_11.radio_in);
@@ -194,7 +197,7 @@ static void init_aux_switches()
 #endif
 
     // initialise functions assigned to switches
-    init_aux_switch_function(g.ch7_option, ap.CH7_flag);
+    //init_aux_switch_function(g.ch7_option, ap.CH7_flag);
     init_aux_switch_function(g.ch8_option, ap.CH8_flag);
     init_aux_switch_function(g.ch10_option, ap.CH10_flag);
     init_aux_switch_function(g.ch11_option, ap.CH11_flag);

@@ -16,6 +16,8 @@
 #include <AC_P.h>
 #include <LeadFilter.h>
 
+#include <stdio.h>
+
 // To-Do: change the name or move to AP_Math?
 #define AC_ATTITUDE_CONTROL_DEGX100 5729.57795f                 // constant to convert from radians to centi-degrees
 #define AC_ATTITUDE_ACCEL_RP_CONTROLLER_MIN             36000.0f// minimum body-frame acceleration limit for the stability controller (for roll and pitch axis)
@@ -44,18 +46,18 @@
 
 // LQR rate control
 // super low gain
-#define LQR_K11        -0.155449579083279f
-#define LQR_K12         0.164198390608568f
-#define LQR_K13         0.006579210406319f
-#define LQR_K21         0.157606178219422f
-#define LQR_K22        -0.149322636543974f
-#define LQR_K23         0.006579210406316f
-#define LQR_K31         0.157561911399739f
-#define LQR_K32         0.164139334691716f
-#define LQR_K33        -0.006579210406317f
-#define LQR_K41        -0.155405312263595f
-#define LQR_K42        -0.149263580627123f
-#define LQR_K43        -0.006579210406317f
+#define LQR_superlow_K11        -0.155449579083279f
+#define LQR_superlow_K12         0.164198390608568f
+#define LQR_superlow_K13         0.006579210406319f
+#define LQR_superlow_K21         0.157606178219422f
+#define LQR_superlow_K22        -0.149322636543974f
+#define LQR_superlow_K23         0.006579210406316f
+#define LQR_superlow_K31         0.157561911399739f
+#define LQR_superlow_K32         0.164139334691716f
+#define LQR_superlow_K33        -0.006579210406317f
+#define LQR_superlow_K41        -0.155405312263595f
+#define LQR_superlow_K42        -0.149263580627123f
+#define LQR_superlow_K43        -0.006579210406317f
 
 // low gain
 // #define LQR_K11        -0.480966518730016f
@@ -86,18 +88,18 @@
 // #define LQR_K43        -0.570671235077978f
 
 // high gain
-// #define LQR_K11        -3.703660738276276f
-// #define LQR_K12         4.177229865121025f
-// #define LQR_K13         3.396827942398406f
-// #define LQR_K21         3.755027193375432f
-// #define LQR_K22        -3.798803339806461f
-// #define LQR_K23         3.396827942398400f
-// #define LQR_K31         3.753688344785829f
-// #define LQR_K32         4.175443720745878f
-// #define LQR_K33        -3.396827942398400f
-// #define LQR_K41        -3.702321889686674f
-// #define LQR_K42        -3.797017195431312f
-// #define LQR_K43        -3.396827942398404f
+#define LQR_high_K11        -3.703660738276276f
+#define LQR_high_K12         4.177229865121025f
+#define LQR_high_K13         3.396827942398406f
+#define LQR_high_K21         3.755027193375432f
+#define LQR_high_K22        -3.798803339806461f
+#define LQR_high_K23         3.396827942398400f
+#define LQR_high_K31         3.753688344785829f
+#define LQR_high_K32         4.175443720745878f
+#define LQR_high_K33        -3.396827942398400f
+#define LQR_high_K41        -3.702321889686674f
+#define LQR_high_K42        -3.797017195431312f
+#define LQR_high_K43        -3.396827942398404f
 
 class AC_AttitudeControl {
 public:
@@ -273,7 +275,8 @@ public:
     // user settable parameters
     static const struct AP_Param::GroupInfo var_info[];
 
-    void set_reduced_att_pqr(const Vector3f& pqr_setpoint) { _pqr_setpoint = pqr_setpoint/AC_ATTITUDE_CONTROL_DEGX100; }
+    void set_rate_setpoint(const Vector3f& pqr_setpoint) { _pqr_setpoint = pqr_setpoint/AC_ATTITUDE_CONTROL_DEGX100;}
+    void set_gain_interp(const int16_t gain_interp) { _gain_interp = gain_interp/1000.0f;}
 
 protected:
 
@@ -361,6 +364,7 @@ protected:
     float               _last_f3;
     float               _last_f4;
     Vector3f            _pqr_setpoint;
+    float               _gain_interp;            // parameter to interpolate aggressiveness of LQR gains
 };
 
 #define AC_ATTITUDE_CONTROL_LOG_FORMAT(msg) { msg, sizeof(AC_AttitudeControl::log_Attitude),	\

@@ -46,18 +46,18 @@
 
 // LQR rate control
 // super low gain
-#define LQR_superlow_K11        -0.155449579083279f
-#define LQR_superlow_K12         0.164198390608568f
-#define LQR_superlow_K13         0.006579210406319f
-#define LQR_superlow_K21         0.157606178219422f
-#define LQR_superlow_K22        -0.149322636543974f
-#define LQR_superlow_K23         0.006579210406316f
-#define LQR_superlow_K31         0.157561911399739f
-#define LQR_superlow_K32         0.164139334691716f
-#define LQR_superlow_K33        -0.006579210406317f
-#define LQR_superlow_K41        -0.155405312263595f
-#define LQR_superlow_K42        -0.149263580627123f
-#define LQR_superlow_K43        -0.006579210406317f
+#define LQR_superlow_K11           -0.015688234508188f
+#define LQR_superlow_K12            0.016533377521743f
+#define LQR_superlow_K13            0.000065908003533f
+#define LQR_superlow_K21            0.015905884359093f
+#define LQR_superlow_K22           -0.015035513860097f
+#define LQR_superlow_K23            0.000065908003533f
+#define LQR_superlow_K31            0.015901457394205f
+#define LQR_superlow_K32            0.016527471552618f
+#define LQR_superlow_K33           -0.000065908003533f
+#define LQR_superlow_K41           -0.015683807543299f
+#define LQR_superlow_K42           -0.015029607890971f
+#define LQR_superlow_K43           -0.000065908003532f
 
 // low gain
 // #define LQR_K11        -0.480966518730016f
@@ -88,18 +88,19 @@
 // #define LQR_K43        -0.570671235077978f
 
 // high gain
-#define LQR_high_K11        -3.703660738276276f
-#define LQR_high_K12         4.177229865121025f
-#define LQR_high_K13         3.396827942398406f
-#define LQR_high_K21         3.755027193375432f
-#define LQR_high_K22        -3.798803339806461f
-#define LQR_high_K23         3.396827942398400f
-#define LQR_high_K31         3.753688344785829f
-#define LQR_high_K32         4.175443720745878f
-#define LQR_high_K33        -3.396827942398400f
-#define LQR_high_K41        -3.702321889686674f
-#define LQR_high_K42        -3.797017195431312f
-#define LQR_high_K43        -3.396827942398404f
+#define LQR_high_K11           -0.480966518730016f
+#define LQR_high_K12            0.510780687679024f
+#define LQR_high_K13            0.064773941627088f
+#define LQR_high_K21            0.487638952019218f
+#define LQR_high_K22           -0.464506038882794f
+#define LQR_high_K23            0.064773941627088f
+#define LQR_high_K31            0.487499046674955f
+#define LQR_high_K32            0.510594041372901f
+#define LQR_high_K33           -0.064773941627087f
+#define LQR_high_K41           -0.480826613385753f
+#define LQR_high_K42           -0.464319392576670f
+#define LQR_high_K43           -0.064773941627088f
+
 
 class AC_AttitudeControl {
 public:

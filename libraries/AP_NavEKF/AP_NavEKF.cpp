@@ -4274,6 +4274,33 @@ void NavEKF::readHgtData()
                 // filter offset to reduce effect of baro noise and other transient errors on estimate
                 baroHgtOffset = 0.1f * (_baro.get_altitude() + state.position.z) + 0.9f * baroHgtOffset;
             }
+        } else if (_ahrs->get_gps().highest_supported_status() == AP_GPS::GPS_OK_FIX_3D_RTK || 
+            (_ahrs->get_gps().num_sensors() > 1 && _ahrs->get_gps().highest_supported_status(1) == AP_GPS::GPS_OK_FIX_3D_RTK )) {
+            //Use RTK height if we have an RTK-capable GPS connected as primary or secondary GPS
+
+            if (_ahrs->get_gps().status() == AP_GPS::GPS_OK_FIX_3D_RTK) {
+                
+                // Don't use Baro height if operating in RTK GPS mode with accurate altitude reading.
+                hgtMea = (_ahrs->get_gps().location().alt - _ahrs->get_home().alt)*0.01f;
+                
+                // calculate offset to baro data that enables baro to be used as a backup
+                // filter offset to reduce effect of baro noise and other transient errors on estimate            
+                baroHgtOffset = 0.1f * (_baro.get_altitude() + state.position.z) + 0.9f * baroHgtOffset;
+                
+                // get states that were stored at the time closest to the measurement time, taking measurement delay into account
+                RecallStates(statesAtHgtTime, (imuSampleTime_ms - constrain_int16(_msecPosDelay, 0, 500)));
+
+            } else {
+                
+                // If have lost RTK, use the Baro as fallback. 
+                // Don't let the baro offset put us below ground level. 
+                // HACK: This assumes we're always flying above the takeoff level. Might not always be true
+                hgtMea = max(_baro.get_altitude() - baroHgtOffset, 0);
+
+                // get states that were stored at the time closest to the measurement time, taking measurement delay into account
+                RecallStates(statesAtHgtTime, (imuSampleTime_ms - msecHgtDelay));
+
+            }
         } else {
             // use baro measurement and correct for baro offset
             hgtMea = _baro.get_altitude();

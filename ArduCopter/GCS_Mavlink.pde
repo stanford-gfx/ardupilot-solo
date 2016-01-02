@@ -1864,6 +1864,33 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
     case MAVLINK_MSG_ID_REMOTE_LOG_BLOCK_STATUS:
         DataFlash.remote_log_block_status_msg(chan, msg);
         break;
+
+     case MAVLINK_MSG_ID_SET_ROI_GLOBAL_INT: // ID: 88
+        mavlink_set_roi_global_int_t packet;
+        mavlink_msg_set_roi_global_int_decode(msg, &packet);
+
+        //todo: handle FRAME and ignore_mask
+
+        Location roi_loc;
+        roi_loc.lat = packet.lat_int;
+        roi_loc.lng = packet.lng_int;
+        roi_loc.alt = (int32_t)(packet.alt * 100.0f);
+
+        Vector3f roi_vel;
+        roi_vel.x = packet.vx;
+        roi_vel.y = packet.vy;
+        roi_vel.z = packet.vz;
+
+        Vector3f roi_acc;
+        roi_acc.x = packet.ax;
+        roi_acc.y = packet.ay;
+        roi_acc.z = packet.az;
+
+        set_auto_yaw_roi(roi_loc, roi_vel, roi_acc, packet.roi_index);
+
+        result = MAV_RESULT_ACCEPTED;
+        break;
+        
     }     // end switch
 
     if (send_heartbeat_immediately) {
